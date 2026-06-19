@@ -29,9 +29,19 @@ function jsonResponse(body, status = 200, origin = "*") {
     status,
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      ...corsHeaders(origin)
+      ...corsHeaders(origin),
+      ...securityHeaders()
     }
   });
+}
+
+function securityHeaders() {
+  return {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+    "Cache-Control": "no-store"
+  };
 }
 
 function corsHeaders(origin = "*") {
@@ -153,13 +163,24 @@ async function generatePrayer(payload, env) {
 export default {
   async fetch(request, env) {
     const origin = allowedOrigin(request, env);
+    const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
-      return new Response(null, { status: origin ? 204 : 403, headers: corsHeaders(origin || "null") });
+      return new Response(null, {
+        status: origin ? 204 : 403,
+        headers: {
+          ...corsHeaders(origin || "null"),
+          ...securityHeaders()
+        }
+      });
     }
 
     if (request.method !== "POST") {
       return jsonResponse({ error: "Use POST /generate" }, 405, origin || "null");
+    }
+
+    if (url.pathname !== "/generate") {
+      return jsonResponse({ error: "Not found" }, 404, origin || "null");
     }
 
     if (!origin) {
@@ -167,6 +188,16 @@ export default {
     }
 
     try {
+      const contentType = request.headers.get("Content-Type") || "";
+      if (!contentType.includes("application/json")) {
+        return jsonResponse({ error: "Content-Type must be application/json" }, 415, origin);
+      }
+
+      const contentLength = Number(request.headers.get("Content-Length") || "0");
+      if (contentLength > 12000) {
+        return jsonResponse({ error: "Request too large" }, 413, origin);
+      }
+
       const payload = normalizePayload(await request.json());
       const prayer = await generatePrayer(payload, env);
       return jsonResponse({ prayer, provider: "gemini", model: env.GEMINI_MODEL || DEFAULT_MODEL }, 200, origin);
