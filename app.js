@@ -39,22 +39,23 @@ const copyIconMarkup = `
   </svg>
 `;
 
-const themeGlyphs = {
-  healing: "+",
-  wisdom: "W",
-  understanding: "?",
-  peace: "~",
-  protection: "S",
-  discernment: "D",
-  provision: "$",
-  gratitude: "*",
-  forgiveness: "F",
-  strength: "^",
-  joy: "J",
-  service: "&",
-  faith: "T",
-  guidance: ">",
-  relationship: "+"
+const themeIcons = {
+  healing: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>',
+  wisdom: '<svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14a6 6 0 1 1 8 0c-.7.6-1 1.4-1 2H9c0-.6-.3-1.4-1-2Z"></path></svg>',
+  understanding: '<svg viewBox="0 0 24 24"><path d="M4 12s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>',
+  peace: '<svg viewBox="0 0 24 24"><path d="M12 3v18M5 7c4 0 7 3 7 7M19 7c-4 0-7 3-7 7M5 17l7-3 7 3"></path></svg>',
+  protection: '<svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3Z"></path></svg>',
+  discernment: '<svg viewBox="0 0 24 24"><path d="M12 3v18M5 8h14M7 8l-3 6h6L7 8ZM17 8l-3 6h6l-3-6Z"></path></svg>',
+  provision: '<svg viewBox="0 0 24 24"><path d="M12 3v18M7 7h7a3 3 0 0 1 0 6h-4a3 3 0 0 0 0 6h7"></path></svg>',
+  gratitude: '<svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 8-5 5 5 0 0 1 8 5c-2 4.6-9 9-9 9Z"></path></svg>',
+  forgiveness: '<svg viewBox="0 0 24 24"><path d="M7 7h10a4 4 0 0 1 0 8H6"></path><path d="m9 11-4 4 4 4"></path></svg>',
+  strength: '<svg viewBox="0 0 24 24"><path d="M7 20V9a3 3 0 0 1 6 0v11M13 12h2a3 3 0 0 1 3 3v5M5 20h14"></path></svg>',
+  joy: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M8 10h.01M16 10h.01M8.5 14c1 1.5 2.2 2.2 3.5 2.2s2.5-.7 3.5-2.2"></path></svg>',
+  service: '<svg viewBox="0 0 24 24"><path d="M4 12h5l2 3 3-7 2 4h4"></path><path d="M6 18h12"></path></svg>',
+  faith: '<svg viewBox="0 0 24 24"><path d="M12 3v18M6 8h12"></path><path d="M5 21h14"></path></svg>',
+  guidance: '<svg viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5"></path><path d="M5 5v14"></path></svg>',
+  relationship: '<svg viewBox="0 0 24 24"><path d="M8 12a4 4 0 1 1 8 0v6H8v-6Z"></path><path d="M12 7v11M8 14h8"></path></svg>',
+  surrender: '<svg viewBox="0 0 24 24"><path d="M12 21V5"></path><path d="M7 10l5-5 5 5"></path><path d="M5 17c2 2 4 3 7 3s5-1 7-3"></path></svg>'
 };
 
 const conciseThemeLines = {
@@ -578,7 +579,7 @@ function renderControls() {
     const glyph = document.createElement("i");
     glyph.className = "theme-glyph";
     glyph.setAttribute("aria-hidden", "true");
-    glyph.textContent = themeGlyphs[key] || "+";
+    glyph.innerHTML = themeIcons[key] || themeIcons.faith;
     const text = document.createElement("span");
     text.textContent = theme.label;
     const span = document.createElement("span");

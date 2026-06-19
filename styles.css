@@ -592,6 +592,16 @@ button:focus-visible {
   box-shadow: inset 0 0 18px rgba(53, 223, 255, 0.1);
 }
 
+.theme-glyph svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+}
+
 .check-option:has(input:checked) {
   border-color: rgba(53, 223, 255, 0.72);
   background:
@@ -731,20 +741,64 @@ body.light .bottom-nav {
 @media (max-width: 640px) {
   .app-shell {
     width: min(100% - 18px, 620px);
-    padding-bottom: 116px;
+    padding-top: 8px;
+    padding-bottom: 96px;
   }
 
   .app-header {
-    align-items: flex-start;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .brand-lockup {
+    gap: 9px;
   }
 
   .brand-mark {
-    width: 44px;
-    height: 44px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .app-header .icon-button {
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .app-header .eyebrow {
+    margin-bottom: 2px;
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+  }
+
+  h1 {
+    font-size: clamp(1.7rem, 9vw, 2.35rem);
   }
 
   .hero-visual {
-    min-height: clamp(300px, 76vw, 380px);
+    min-height: clamp(205px, 54vw, 260px);
+  }
+
+  .hero-orbit {
+    top: 43%;
+    width: min(48vw, 190px);
+  }
+
+  .hero-copy {
+    left: 16px;
+    right: 16px;
+    bottom: 15px;
+  }
+
+  .hero-copy h2 {
+    margin: 3px 0 5px;
+    font-size: clamp(1.75rem, 8vw, 2.45rem);
+  }
+
+  .hero-copy p,
+  .hero-copy span {
+    font-size: 0.92rem;
   }
 
   .daily-card,
@@ -790,7 +844,28 @@ body.light .bottom-nav {
   }
 
   .theme-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .theme-grid .check-option {
+    min-height: 58px;
+    padding: 7px 5px;
+    font-size: 0.68rem;
+  }
+
+  .check-option span {
+    gap: 4px;
+  }
+
+  .theme-glyph {
+    width: 26px;
+    height: 26px;
+  }
+
+  .theme-glyph svg {
+    width: 16px;
+    height: 16px;
   }
 
   .prayer-output {
@@ -812,11 +887,23 @@ body.light .bottom-nav {
   .actions .primary {
     flex-basis: 100%;
   }
+
+  .bottom-nav {
+    width: min(410px, calc(100% - 18px));
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .bottom-nav button {
+    min-height: 40px;
+    padding: 0 6px;
+    font-size: 0.78rem;
+  }
 }
 
 @media (max-width: 390px) {
   .theme-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .bottom-nav {
