@@ -124,29 +124,15 @@
             <div id="theme-list" class="theme-grid"></div>
           </section>
 
-          <details class="control-card option-drawer">
-            <summary>
-              <span>
-                <small class="eyebrow">More</small>
-                Options
-              </span>
-              <b aria-hidden="true">+</b>
-            </summary>
-            <div class="options-row">
-              <label class="check-option">
-                <input id="include-greeting" type="checkbox" checked>
-                <span>Morning-style greeting</span>
-              </label>
-              <label class="check-option">
-                <input id="include-scripture" type="checkbox">
-                <span>Scripture references</span>
-              </label>
-              <label class="check-option">
-                <input id="include-relationship" type="checkbox" checked>
-                <span>Relationship blessing</span>
-              </label>
+          <section class="control-card scripture-card">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Scripture</p>
+                <h2>References</h2>
+              </div>
             </div>
-          </details>
+            <div id="scripture-list" class="scripture-list"></div>
+          </section>
 
           <div class="actions">
             <button class="primary" id="generate" type="submit">Generate Prayer</button>

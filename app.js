@@ -13,9 +13,7 @@ const elements = {
   addPersonRequest: document.querySelector("#add-person-request"),
   details: document.querySelector("#details"),
   themeList: document.querySelector("#theme-list"),
-  includeGreeting: document.querySelector("#include-greeting"),
-  includeScripture: document.querySelector("#include-scripture"),
-  includeRelationship: document.querySelector("#include-relationship"),
+  scriptureList: document.querySelector("#scripture-list"),
   output: document.querySelector("#prayer-output"),
   outputTitle: document.querySelector("#output-title"),
   comboCount: document.querySelector("#combo-count"),
@@ -46,7 +44,8 @@ const themeGlyphs = {
   joy: "J",
   service: "&",
   faith: "T",
-  guidance: ">"
+  guidance: ">",
+  relationship: "+"
 };
 
 const conciseThemeLines = {
@@ -63,7 +62,27 @@ const conciseThemeLines = {
   joy: ["Restore simple joy."],
   service: ["Show us how to love and serve well."],
   faith: ["Strengthen faith without fear or striving."],
-  guidance: ["Lead us clearly and help us obey."]
+  guidance: ["Lead us clearly and help us obey."],
+  relationship: ["Help this relationship reflect Your love and truth."]
+};
+
+const bibleBookCodes = {
+  James: "JAS",
+  Philippians: "PHP",
+  Proverbs: "PRO",
+  Psalm: "PSA",
+  Isaiah: "ISA",
+  Matthew: "MAT",
+  Romans: "ROM",
+  Timothy: "TI",
+  Numbers: "NUM",
+  John: "JHN",
+  Ephesians: "EPH",
+  Colossians: "COL",
+  Corinthians: "CO",
+  Jeremiah: "JER",
+  Lamentations: "LAM",
+  Galatians: "GAL"
 };
 
 function hashString(value) {
@@ -214,6 +233,19 @@ function willSurrender(length) {
   return "";
 }
 
+function bibleUrl(reference) {
+  const match = reference.match(/^((?:[1-3]\s)?[A-Za-z]+)\s+(\d+):([\d-]+)$/);
+  if (!match) return "https://www.bible.com/";
+  const rawBook = match[1];
+  const chapter = match[2];
+  const verses = match[3].replace("-", "-");
+  const ordinal = rawBook.match(/^([1-3])\s/);
+  const bookName = rawBook.replace(/^[1-3]\s/, "");
+  const baseCode = bibleBookCodes[bookName] || bookName.slice(0, 3).toUpperCase();
+  const code = ordinal ? `${ordinal[1]}${baseCode}` : baseCode;
+  return `https://www.bible.com/bible/111/${code}.${chapter}.${verses}.NIV`;
+}
+
 function selectedThemes() {
   return [...elements.themeList.querySelectorAll("input[type='checkbox']:checked")]
     .map((input) => input.value);
@@ -235,9 +267,6 @@ function currentFormSeed() {
     requests,
     elements.details.value,
     selectedThemes().join(","),
-    elements.includeGreeting.checked,
-    elements.includeScripture.checked,
-    elements.includeRelationship.checked,
     state.nonce
   ].join("|");
 }
@@ -267,11 +296,7 @@ function buildPrayer() {
     return db.themes[key]?.lines || [];
   });
 
-  if (elements.includeGreeting.checked) {
-    sections.push(honestOpening(type, rng, elements.length.value));
-  } else {
-    sections.push(fillTemplate(pick(db.invocations, rng), values));
-  }
+  sections.push(honestOpening(type, rng, elements.length.value));
 
   const requestLine = personRequestPrayerLine(personRequests);
   if (requestLine) sections.push(requestLine);
@@ -286,13 +311,8 @@ function buildPrayer() {
     sections.push(...pickMany(themeLines, settings.themeLines, rng));
   }
 
-  if (elements.includeRelationship.checked && settings.relationship) {
+  if (themes.includes("relationship") && settings.relationship) {
     sections.push(...pickMany(db.relationshipBlessings, settings.relationship, rng));
-  }
-
-  if (elements.includeScripture.checked) {
-    const refs = pickMany(db.scriptureReferences, settings.scripture, rng);
-    sections.push(`Bring these truths to mind as we remember ${refs.join(", ")}.`);
   }
 
   sections.push(willSurrender(elements.length.value) || pick(db.closings, rng));
@@ -368,6 +388,17 @@ function renderControls() {
     span.append(glyph, text);
     label.append(input, span);
     elements.themeList.append(label);
+  });
+
+  state.db.scriptureReferences.forEach((reference) => {
+    const link = document.createElement("a");
+    link.className = "scripture-link";
+    link.href = bibleUrl(reference);
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = reference;
+    link.title = `Open ${reference} on Bible.com`;
+    elements.scriptureList.append(link);
   });
 
   elements.comboCount.textContent = formatLargeNumber(estimateCombinations(state.db));
