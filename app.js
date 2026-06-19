@@ -401,7 +401,7 @@ function currentFormSeed() {
 }
 
 function currentPrayerTypeLabel() {
-  return state.db.prayerTypes[elements.prayerType.value]?.label || elements.prayerType.value || "Morning Prayer";
+  return state.db.prayerTypes[elements.prayerType.value]?.label || elements.prayerType.value || "General Prayer";
 }
 
 function currentToneLabel() {
@@ -423,7 +423,7 @@ function aiPayload() {
 function buildPrayer() {
   const db = state.db;
   const rng = makeRng(currentFormSeed());
-  const type = db.prayerTypes[elements.prayerType.value] || db.prayerTypes.morning;
+  const type = db.prayerTypes[elements.prayerType.value] || db.prayerTypes.general || db.prayerTypes.morning;
   const tone = db.tones[elements.tone.value] || db.tones.tender;
   const settings = lengthSettings(elements.length.value);
   const themes = selectedThemes();

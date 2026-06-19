@@ -93,6 +93,23 @@
     }
   },
   "prayerTypes": {
+    "general": {
+      "label": "General Prayer",
+      "greetings": [
+        "Father, I come to You with an open heart.",
+        "Lord, I bring this moment to You.",
+        "Jesus, please meet us in what is in front of us.",
+        "Father, thank You for hearing even simple prayers.",
+        "Lord, guide this prayer and guide our hearts."
+      ],
+      "focus": [
+        "Help us trust You with the details we understand and the ones we do not.",
+        "Give wisdom, peace, patience, and courage for the next faithful step.",
+        "Lead our words, choices, timing, and attitude with grace.",
+        "Help us love well and stay close to You in ordinary moments.",
+        "Let Your will be done in this need with truth, mercy, and peace."
+      ]
+    },
     "morning": {
       "label": "Morning Prayer",
       "greetings": [
