@@ -8,9 +8,11 @@ Follow these rules every time:
 - Do not flatter God with long decorative language or "butter God up."
 - Do not sound generic, theatrical, mystical, or preachy.
 - Pray to Father/Lord/Jesus naturally.
-- Include the provided people and requests in context, not as raw notes.
+- The first sentence must be gratitude to Father, Jesus, or the Holy Spirit.
+- Use the provided people and requests as background context, not wording to paste into the prayer.
 - Never output a bullet list of people or requests inside the prayer.
-- Weave names and needs into natural prayer sentences, for example: "Please give Sarah peace and courage as she faces this work decision."
+- Never write a line like "I bring these requests" followed by names or raw notes.
+- Rewrite the situation in your own prayerful words, for example: "Please give Sarah peace and courage as she faces this work decision."
 - If multiple people are included, pray over each person in connected sentences or short paragraphs that flow.
 - Bring requests to God plainly, ask for wisdom, peace, healing, protection, discernment, or other selected themes when relevant.
 - Surrender to God's will.
@@ -157,12 +159,9 @@ function normalizePayload(input) {
 }
 
 function userPrompt(payload) {
-  const requests = payload.peopleRequests.length
-    ? payload.peopleRequests.map((item) => {
-      if (item.person && item.request) return `- ${item.person}: ${item.request}`;
-      return `- ${item.person || item.request}`;
-    }).join("\n")
-    : "- no specific person/request entered";
+  const requestSourceNotes = payload.peopleRequests.length
+    ? JSON.stringify(payload.peopleRequests)
+    : "No specific person/request entered";
 
   const scriptureOptions = payload.scriptureOptions.length
     ? payload.scriptureOptions.map((item) => `- ${item.reference}: ${item.topics.join(", ")}`).join("\n")
@@ -175,7 +174,7 @@ function userPrompt(payload) {
     }).join("\n")
     : "- none selected";
   const requestGuidance = payload.peopleRequests.length
-    ? "Write natural sentences that bring each person and need to God. Do not use labels like 'People and requests' or repeat the input format."
+    ? "Understand the people and needs, then rewrite them as smooth prayer sentences. Do not copy the source notes, do not use colon-separated names, and do not repeat the input format."
     : "No specific person was entered; keep the prayer general and heartfelt.";
 
   return `
@@ -189,11 +188,11 @@ Settings:
 - Pray over keys: ${payload.settings.prayOverKeys.join(", ") || payload.themeKeys.join(", ") || "none selected"}
 - Local database mode checked: ${payload.settings.useLocalDatabase ? "yes" : "no"}
 
-People and prayer needs as source data, not output format:
-${requests}
+People and prayer needs as private source notes only. Understand these notes, then write a fresh prayer in your own words:
+${requestSourceNotes}
 Details: ${payload.details || "none"}
 
-Current/previous prayer output, if present. Use it only to avoid repeating awkward phrasing and to improve flow:
+Current/previous prayer output, if present. Use it only to avoid repeating awkward phrasing and to improve flow. Do not imitate any list-like fallback wording:
 ${payload.previousOutput || "none"}
 
 Style profile from the local database:
@@ -222,11 +221,13 @@ Preferred scripture references from current settings:
 ${payload.selectedScriptureReferences.join(", ") || "none"}
 
 Flow instructions:
+- Start the first sentence with gratitude to Father, Jesus, or the Holy Spirit.
 - ${requestGuidance}
 - Keep the prayer in the database style: direct, warm, practical, biblical, and not wordy.
 - Use the template examples for style and rhythm, but do not copy a whole template line unless it fits naturally.
 - If the selected length is tiny or short, prioritize the people/needs and one clear ask over extra decoration.
 - Do not say "You know the details:" unless it sounds natural in the prayer.
+- Do not say "Father, I bring these requests to You" or anything that introduces the fields as a list.
 
 Return valid JSON only. The prayer must be plain text with no title, markdown, bullets, or quotation marks inside the prayer string. The scriptureReferences array must contain only exact references from the allowed list.
 `;

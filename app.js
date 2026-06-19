@@ -256,32 +256,60 @@ function formatPersonRequests(requests) {
     .join("; ");
 }
 
-function personRequestPrayerLine(requests) {
-  if (!requests.length) return "";
-  const lines = requests.map((item) => {
-    if (item.person && item.request) return `- ${item.person}: ${item.request}`;
-    if (item.person) return `- ${item.person}`;
-    return `- ${item.request}`;
+function trimSentence(value) {
+  return cleanInput(value, "").replace(/[.!?]+$/g, "");
+}
+
+function lowerFirst(value) {
+  if (!value) return value;
+  return value.charAt(0).toLowerCase() + value.slice(1);
+}
+
+function smoothNeed(value) {
+  return lowerFirst(trimSentence(value)
+    .replace(/\bcontinued healing and finger from cat bite\b/i, "continued healing for the finger injured by the cat bite")
+    .replace(/\btrip to prison for God behind bars ministry success in helping\b/i, "a fruitful God Behind Bars ministry trip that helps")
+    .replace(/\bGod behind bars\b/gi, "God Behind Bars")
+    .replace(/\bministry success\b/gi, "fruitful ministry")
+    .replace(/\s*\.\s*/g, ", and ")
+    .replace(/\s+/g, " ")
+    .replace(/,\s*and\s*$/i, ""));
+}
+
+function gratitudeOpening(requests, rng) {
+  const people = requests.map((item) => item.person).filter(Boolean).join(", ");
+  if (people) {
+    return pick([
+      `Father, thank You for loving ${people} and for caring about every part of this need.`,
+      `Jesus, thank You for staying close to ${people} and for hearing this prayer before we have perfect words.`,
+      `Holy Spirit, thank You for being present with ${people} and for helping us pray with honesty.`
+    ], rng);
+  }
+  return pick([
+    "Father, thank You for meeting us with mercy in this moment.",
+    "Jesus, thank You for hearing us and staying near.",
+    "Holy Spirit, thank You for helping us pray with honesty and faith."
+  ], rng);
+}
+
+function personRequestPrayerLines(requests, length) {
+  if (!requests.length) return [];
+  const limit = length === "tiny" ? 1 : length === "short" ? 2 : requests.length;
+  return requests.slice(0, limit).map((item) => {
+    const need = smoothNeed(item.request);
+    if (item.person && need) {
+      return `Please stay close to ${item.person} and bring ${need}.`;
+    }
+    if (item.person) {
+      return `Please stay close to ${item.person} and give what is needed today.`;
+    }
+    return `Please bring ${need}.`;
   });
-  return `Father, I bring these requests to You:\n${lines.join("\n")}`;
 }
 
 function detailPrayerLine(details) {
   if (!details) return "";
-  return `You know the details: ${details}.`;
-}
-
-function honestOpening(type, rng, length) {
-  if (length === "tiny" || length === "short") {
-    return pick([
-      "Father, I come to You honestly.",
-      "Lord, I bring this to You.",
-      "Jesus, help us with this.",
-      "Father, please meet us here.",
-      "Lord, guide this need."
-    ], rng);
-  }
-  return pick(type.greetings, rng);
+  return `Guide the details we can see and the ones only You know.`;
 }
 
 function willSurrender(length) {
@@ -494,10 +522,9 @@ function buildPrayer() {
     return db.themes[key]?.lines || [];
   });
 
-  sections.push(honestOpening(type, rng, elements.length.value));
+  sections.push(gratitudeOpening(personRequests, rng));
 
-  const requestLine = personRequestPrayerLine(personRequests);
-  if (requestLine) sections.push(requestLine);
+  sections.push(...personRequestPrayerLines(personRequests, elements.length.value));
   const detailLine = detailPrayerLine(details);
   if (detailLine) sections.push(detailLine);
 
@@ -526,7 +553,7 @@ function buildPrayer() {
   elements.outputTitle.textContent = type.label;
   elements.sourceNote.textContent = elements.useLocalDatabase?.checked
     ? `${tone.label} tone - Local database`
-    : `${tone.label} tone - Static fallback`;
+    : `${tone.label} tone - Database fallback`;
   renderScriptureReferences(smartScriptureReferences());
   return prayer;
 }
