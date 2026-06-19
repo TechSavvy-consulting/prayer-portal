@@ -14,6 +14,8 @@ Follow these rules every time:
 - Close in Jesus name, Amen.
 - Respect the selected length.
 - Do not add fake scripture quotes. If scripture references are provided, mention references only when natural.
+- Choose 3 to 6 helpful scripture references from the allowed list. Use exact reference text only.
+- Return valid JSON only with this shape: {"prayer":"...","scriptureReferences":["..."]}.
 
 Length targets:
 - tiny: 25-45 words.
@@ -82,13 +84,21 @@ function normalizePayload(input) {
     })).filter((item) => item.person || item.request)
     : [];
 
+  const scriptureOptions = Array.isArray(input.scriptureOptions)
+    ? input.scriptureOptions.slice(0, 40).map((item) => ({
+      reference: cleanText(item.reference, 40),
+      topics: Array.isArray(item.topics) ? item.topics.map((topic) => cleanText(topic, 32)).filter(Boolean).slice(0, 10) : []
+    })).filter((item) => item.reference)
+    : [];
+
   return {
     prayerType: cleanText(input.prayerType, 80) || "Morning Prayer",
     tone: cleanText(input.tone, 80) || "Simple",
     length: ["tiny", "short", "medium", "long"].includes(input.length) ? input.length : "short",
     details: cleanText(input.details, 600),
     themes: Array.isArray(input.themes) ? input.themes.map((item) => cleanText(item, 60)).filter(Boolean).slice(0, 12) : [],
-    peopleRequests
+    peopleRequests,
+    scriptureOptions
   };
 }
 
@@ -100,6 +110,10 @@ function userPrompt(payload) {
     }).join("\n")
     : "- no specific person/request entered";
 
+  const scriptureOptions = payload.scriptureOptions.length
+    ? payload.scriptureOptions.map((item) => `- ${item.reference}: ${item.topics.join(", ")}`).join("\n")
+    : "- none";
+
   return `
 Create one prayer with these inputs.
 
@@ -110,8 +124,10 @@ Pray over themes: ${payload.themes.join(", ") || "none selected"}
 People and requests:
 ${requests}
 Details: ${payload.details || "none"}
+Allowed scripture references:
+${scriptureOptions}
 
-Return only the prayer text. No title, explanation, bullets, markdown, or quotation marks.
+Return valid JSON only. The prayer must be plain text with no title, markdown, bullets, or quotation marks inside the prayer string. The scriptureReferences array must contain only exact references from the allowed list.
 `;
 }
 
@@ -122,13 +138,33 @@ function extractGeminiText(data) {
     .trim() || "";
 }
 
+function parseAiResult(text, payload) {
+  const cleaned = text
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/```$/i, "")
+    .trim();
+
+  try {
+    const parsed = JSON.parse(cleaned);
+    const prayer = cleanText(parsed.prayer, 5000);
+    const allowed = new Set(payload.scriptureOptions.map((item) => item.reference));
+    const scriptureReferences = Array.isArray(parsed.scriptureReferences)
+      ? parsed.scriptureReferences.map((reference) => cleanText(reference, 40)).filter((reference) => allowed.has(reference)).slice(0, 6)
+      : [];
+    return { prayer, scriptureReferences };
+  } catch {
+    return { prayer: cleaned, scriptureReferences: [] };
+  }
+}
+
 async function generatePrayer(payload, env) {
   const apiKey = env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("GEMINI_API_KEY is not configured");
 
   const model = env.GEMINI_MODEL || DEFAULT_MODEL;
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
-  const maxOutputTokens = payload.length === "long" ? 320 : payload.length === "medium" ? 220 : 120;
+  const maxOutputTokens = payload.length === "long" ? 420 : payload.length === "medium" ? 320 : 220;
 
   const response = await fetch(url, {
     method: "POST",
@@ -144,7 +180,8 @@ async function generatePrayer(payload, env) {
       generationConfig: {
         temperature: 0.55,
         topP: 0.9,
-        maxOutputTokens
+        maxOutputTokens,
+        responseMimeType: "application/json"
       }
     })
   });
@@ -155,9 +192,9 @@ async function generatePrayer(payload, env) {
   }
 
   const data = await response.json();
-  const prayer = extractGeminiText(data);
-  if (!prayer) throw new Error("Gemini returned an empty prayer");
-  return prayer;
+  const result = parseAiResult(extractGeminiText(data), payload);
+  if (!result.prayer) throw new Error("Gemini returned an empty prayer");
+  return result;
 }
 
 export default {
@@ -199,8 +236,8 @@ export default {
       }
 
       const payload = normalizePayload(await request.json());
-      const prayer = await generatePrayer(payload, env);
-      return jsonResponse({ prayer, provider: "gemini", model: env.GEMINI_MODEL || DEFAULT_MODEL }, 200, origin);
+      const result = await generatePrayer(payload, env);
+      return jsonResponse({ ...result, provider: "gemini", model: env.GEMINI_MODEL || DEFAULT_MODEL }, 200, origin);
     } catch (error) {
       return jsonResponse({ error: error.message || "Prayer generation failed" }, 500, origin);
     }

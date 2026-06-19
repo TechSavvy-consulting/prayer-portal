@@ -75,6 +75,48 @@ const conciseThemeLines = {
   relationship: ["Help this relationship reflect Your love and truth."]
 };
 
+const scriptureProfiles = {
+  "James 1:5": ["wisdom", "decision", "guidance", "understanding", "discernment"],
+  "Philippians 4:6-7": ["peace", "anxiety", "worry", "prayer", "help"],
+  "Proverbs 3:5-6": ["trust", "guidance", "decision", "wisdom", "surrender"],
+  "Psalm 91": ["protection", "safety", "fear", "travel", "covering"],
+  "Psalm 23": ["peace", "comfort", "guidance", "rest", "care"],
+  "Isaiah 41:10": ["strength", "fear", "help", "healing", "courage"],
+  "Matthew 6:33": ["closer", "priority", "provision", "kingdom", "faith"],
+  "Romans 8:28": ["trust", "purpose", "hardship", "hope", "surrender"],
+  "2 Timothy 1:7": ["fear", "strength", "courage", "discipline", "peace"],
+  "Numbers 6:24-26": ["blessing", "family", "peace", "morning", "protection"],
+  "John 14:27": ["peace", "fear", "comfort", "help", "relationship"],
+  "Psalm 46:10": ["stillness", "peace", "surrender", "stress", "trust"],
+  "Ephesians 3:16-19": ["closer", "faith", "strength", "love", "relationship"],
+  "Colossians 3:12-15": ["relationship", "forgiveness", "peace", "family", "love"],
+  "1 Corinthians 13:4-7": ["relationship", "love", "patience", "fiance", "marriage"],
+  "Psalm 121": ["protection", "travel", "help", "safety", "watching"],
+  "Jeremiah 29:11": ["future", "hope", "decision", "plans", "trust"],
+  "Lamentations 3:22-23": ["morning", "mercy", "gratitude", "faithfulness", "new day"],
+  "Isaiah 26:3": ["peace", "trust", "mind", "anxiety", "focus"],
+  "Galatians 5:22-23": ["growth", "spirit", "character", "service", "joy"]
+};
+
+const prayerTypeScriptures = {
+  morning: ["Lamentations 3:22-23", "Numbers 6:24-26", "Psalm 23"],
+  food: ["Matthew 6:33", "Psalm 23", "Galatians 5:22-23"],
+  help: ["Philippians 4:6-7", "Isaiah 41:10", "Psalm 46:10"],
+  understanding: ["James 1:5", "Proverbs 3:5-6", "Colossians 3:12-15"],
+  closer: ["Matthew 6:33", "Ephesians 3:16-19", "Psalm 46:10"],
+  healing: ["Isaiah 41:10", "Psalm 23", "Romans 8:28"],
+  relationship: ["1 Corinthians 13:4-7", "Colossians 3:12-15", "Ephesians 3:16-19"],
+  work: ["James 1:5", "Proverbs 3:5-6", "Matthew 6:33"],
+  travel: ["Psalm 121", "Psalm 91", "Numbers 6:24-26"],
+  family: ["Colossians 3:12-15", "Numbers 6:24-26", "Psalm 23"],
+  decision: ["James 1:5", "Proverbs 3:5-6", "Jeremiah 29:11"],
+  protection: ["Psalm 91", "Psalm 121", "Isaiah 41:10"],
+  gratitude: ["Lamentations 3:22-23", "Psalm 23", "Galatians 5:22-23"],
+  bedtime: ["Psalm 46:10", "John 14:27", "Psalm 91"],
+  apology: ["Colossians 3:12-15", "Galatians 5:22-23", "1 Corinthians 13:4-7"],
+  community: ["Galatians 5:22-23", "Matthew 6:33", "Colossians 3:12-15"]
+};
+
 const bibleBookCodes = {
   James: "JAS",
   Philippians: "PHP",
@@ -248,15 +290,16 @@ function willSurrender(length) {
 }
 
 function bibleUrl(reference) {
-  const match = reference.match(/^((?:[1-3]\s)?[A-Za-z]+)\s+(\d+):([\d-]+)$/);
+  const match = reference.match(/^((?:[1-3]\s)?[A-Za-z]+)\s+(\d+)(?::([\d-]+))?$/);
   if (!match) return "https://www.bible.com/";
   const rawBook = match[1];
   const chapter = match[2];
-  const verses = match[3].replace("-", "-");
+  const verses = match[3]?.replace("-", "-");
   const ordinal = rawBook.match(/^([1-3])\s/);
   const bookName = rawBook.replace(/^[1-3]\s/, "");
   const baseCode = bibleBookCodes[bookName] || bookName.slice(0, 3).toUpperCase();
   const code = ordinal ? `${ordinal[1]}${baseCode}` : baseCode;
+  if (!verses) return `https://www.bible.com/bible/111/${code}.${chapter}.NIV`;
   return `https://www.bible.com/bible/111/${code}.${chapter}.${verses}.NIV`;
 }
 
@@ -267,6 +310,72 @@ function selectedThemes() {
 
 function selectedThemeLabels() {
   return selectedThemes().map((key) => state.db.themes[key]?.label || key);
+}
+
+function scriptureLibrary() {
+  return state.db.scriptureReferences.map((reference) => ({
+    reference,
+    topics: scriptureProfiles[reference] || []
+  }));
+}
+
+function currentSearchText() {
+  const requests = collectPersonRequests()
+    .map((item) => `${item.person} ${item.request}`)
+    .join(" ");
+  return [
+    elements.prayerType.value,
+    currentPrayerTypeLabel(),
+    selectedThemes().join(" "),
+    selectedThemeLabels().join(" "),
+    requests,
+    elements.details.value
+  ].join(" ").toLowerCase();
+}
+
+function smartScriptureReferences(limit = 6) {
+  const selected = new Set(selectedThemes());
+  const typeMatches = new Set(prayerTypeScriptures[elements.prayerType.value] || []);
+  const searchText = currentSearchText();
+
+  const scored = scriptureLibrary().map((item, index) => {
+    let score = 0;
+    if (typeMatches.has(item.reference)) score += 4;
+    item.topics.forEach((topic) => {
+      if (selected.has(topic)) score += 5;
+      if (searchText.includes(topic)) score += 2;
+    });
+    return { ...item, index, score };
+  });
+
+  return scored
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .filter((item, index) => item.score > 0 || index < limit)
+    .slice(0, limit)
+    .map((item) => item.reference);
+}
+
+function renderScriptureReferences(references = smartScriptureReferences()) {
+  const allowed = new Set(state.db.scriptureReferences);
+  const cleanReferences = [...new Set(references)]
+    .filter((reference) => allowed.has(reference))
+    .slice(0, 6);
+  const finalReferences = cleanReferences.length ? cleanReferences : smartScriptureReferences();
+
+  elements.scriptureList.innerHTML = "";
+  finalReferences.forEach((reference) => {
+    const link = document.createElement("a");
+    link.className = "scripture-link";
+    link.href = bibleUrl(reference);
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = reference;
+    const topics = scriptureProfiles[reference] || [];
+    link.title = topics.length
+      ? `Open ${reference} on Bible.com - helpful for ${topics.slice(0, 3).join(", ")}`
+      : `Open ${reference} on Bible.com`;
+    elements.scriptureList.append(link);
+  });
 }
 
 function lengthSettings(length) {
@@ -305,7 +414,8 @@ function aiPayload() {
     length: elements.length.value,
     details: cleanInput(elements.details.value, ""),
     themes: selectedThemeLabels(),
-    peopleRequests: collectPersonRequests()
+    peopleRequests: collectPersonRequests(),
+    scriptureOptions: scriptureLibrary()
   };
 }
 
@@ -367,6 +477,7 @@ function buildPrayer() {
   elements.sourceNote.textContent = elements.useLocalDatabase?.checked
     ? `${tone.label} tone - Local database`
     : `${tone.label} tone - Static fallback`;
+  renderScriptureReferences(smartScriptureReferences());
   return prayer;
 }
 
@@ -392,6 +503,7 @@ async function generateAiPrayer() {
   elements.output.textContent = data.prayer;
   elements.outputTitle.textContent = currentPrayerTypeLabel();
   elements.sourceNote.textContent = `${currentToneLabel()} tone - AI generated`;
+  renderScriptureReferences(data.scriptureReferences?.length ? data.scriptureReferences : smartScriptureReferences());
   return data.prayer;
 }
 
@@ -475,16 +587,7 @@ function renderControls() {
     elements.themeList.append(label);
   });
 
-  state.db.scriptureReferences.forEach((reference) => {
-    const link = document.createElement("a");
-    link.className = "scripture-link";
-    link.href = bibleUrl(reference);
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = reference;
-    link.title = `Open ${reference} on Bible.com`;
-    elements.scriptureList.append(link);
-  });
+  renderScriptureReferences();
 
   elements.comboCount.textContent = formatLargeNumber(estimateCombinations(state.db));
 }
