@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Prayer Portal</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260619-local-db">
   </head>
   <body>
     <div class="ambient" aria-hidden="true"></div>
@@ -41,18 +41,21 @@
               <h2 id="output-title">Ready when you are</h2>
             </div>
             <div class="tool-row">
-              <button class="icon-button" id="copy-prayer" type="button" aria-label="Copy prayer" title="Copy prayer">[]</button>
+              <button class="icon-button" id="copy-prayer" type="button" aria-label="Copy prayer" title="Copy prayer">
+                <svg class="button-icon" aria-hidden="true" viewBox="0 0 24 24">
+                  <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+                  <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+                </svg>
+              </button>
               <button class="icon-button" id="save-prayer" type="button" aria-label="Save favorite" title="Save favorite">+</button>
             </div>
           </div>
 
-          <article id="prayer-output" class="prayer-output">
-            Father, thank You for this beautiful new day and for Your presence in it.
-          </article>
+          <article id="prayer-output" class="prayer-output"></article>
 
           <div class="meta-strip">
             <span id="combo-count">Static local database</span>
-            <span id="source-note">No API. No upload. Runs on this computer.</span>
+            <span id="source-note">Preparing prayer...</span>
           </div>
         </section>
 
@@ -95,6 +98,11 @@
                   <option value="medium">Medium</option>
                   <option value="long">Long</option>
                 </select>
+              </label>
+
+              <label class="wide inline-check">
+                <input id="use-local-database" type="checkbox">
+                <span>Use local database, not AI</span>
               </label>
 
               <div class="wide people-header">
@@ -161,7 +169,7 @@
       <button class="primary" type="submit" form="prayer-form">Pray</button>
     </nav>
 
-    <script src="ai-config.js?v=20260619-ai"></script>
-    <script src="app.js?v=20260619-ai"></script>
+    <script src="ai-config.js?v=20260619-local-db"></script>
+    <script src="app.js?v=20260619-local-db"></script>
   </body>
 </html>

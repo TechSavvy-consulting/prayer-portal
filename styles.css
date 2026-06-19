@@ -242,6 +242,16 @@ h2 {
   place-items: center;
 }
 
+.button-icon {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
 .hero-visual {
   position: relative;
   min-height: 350px;
@@ -416,6 +426,25 @@ h2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+}
+
+.inline-check {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink);
+}
+
+.inline-check input {
+  width: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  margin: 0;
+  accent-color: var(--cyan);
 }
 
 .people-header {

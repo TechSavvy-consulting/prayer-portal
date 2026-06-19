@@ -10,6 +10,7 @@ const elements = {
   prayerType: document.querySelector("#prayer-type"),
   tone: document.querySelector("#tone"),
   length: document.querySelector("#length"),
+  useLocalDatabase: document.querySelector("#use-local-database"),
   peopleRequestList: document.querySelector("#people-request-list"),
   addPersonRequest: document.querySelector("#add-person-request"),
   details: document.querySelector("#details"),
@@ -30,6 +31,13 @@ const elements = {
   mobileUrl: document.querySelector("#mobile-url"),
   qrImage: document.querySelector("#qr-image")
 };
+
+const copyIconMarkup = `
+  <svg class="button-icon" aria-hidden="true" viewBox="0 0 24 24">
+    <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+    <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+  </svg>
+`;
 
 const themeGlyphs = {
   healing: "+",
@@ -87,6 +95,7 @@ const bibleBookCodes = {
 };
 
 function aiEndpoint() {
+  if (elements.useLocalDatabase?.checked) return "";
   return String(window.PRAYER_PORTAL_AI_URL || "").trim();
 }
 
@@ -276,6 +285,7 @@ function currentFormSeed() {
     requests,
     elements.details.value,
     selectedThemes().join(","),
+    elements.useLocalDatabase?.checked ? "local" : "ai",
     state.nonce
   ].join("|");
 }
@@ -354,9 +364,9 @@ function buildPrayer() {
   state.lastProvider = "static";
   elements.output.textContent = prayer;
   elements.outputTitle.textContent = type.label;
-  elements.sourceNote.textContent = aiEndpoint()
-    ? `${tone.label} tone · Static fallback`
-    : `${tone.label} tone · Simple biblical style`;
+  elements.sourceNote.textContent = elements.useLocalDatabase?.checked
+    ? `${tone.label} tone - Local database`
+    : `${tone.label} tone - Static fallback`;
   return prayer;
 }
 
@@ -381,7 +391,7 @@ async function generateAiPrayer() {
   state.lastProvider = data.provider || "ai";
   elements.output.textContent = data.prayer;
   elements.outputTitle.textContent = currentPrayerTypeLabel();
-  elements.sourceNote.textContent = `${currentToneLabel()} tone · AI generated`;
+  elements.sourceNote.textContent = `${currentToneLabel()} tone - AI generated`;
   return data.prayer;
 }
 
@@ -452,7 +462,7 @@ function renderControls() {
     const input = document.createElement("input");
     input.type = "checkbox";
     input.value = key;
-    input.checked = ["healing", "wisdom", "peace", "protection"].includes(key) || index < 2;
+    input.checked = false;
     const glyph = document.createElement("i");
     glyph.className = "theme-glyph";
     glyph.setAttribute("aria-hidden", "true");
@@ -540,7 +550,7 @@ async function copyPrayer() {
   }
   elements.copyPrayer.textContent = "OK";
   window.setTimeout(() => {
-    elements.copyPrayer.textContent = "[]";
+    elements.copyPrayer.innerHTML = copyIconMarkup;
   }, 900);
 }
 
@@ -598,10 +608,10 @@ function bindEvents() {
     elements.form.reset();
     renderInitialPersonRequest();
     [...elements.themeList.querySelectorAll("input")].forEach((input) => {
-      input.checked = ["healing", "wisdom", "peace", "protection"].includes(input.value);
+      input.checked = false;
     });
     state.nonce += 1;
-    buildPrayer();
+    generatePrayer();
   });
 
   elements.copyPrayer.addEventListener("click", copyPrayer);
@@ -646,7 +656,9 @@ async function init() {
   bindEvents();
   renderFavorites();
   loadConnectionInfo();
-  buildPrayer();
+  elements.outputTitle.textContent = "Generating prayer";
+  elements.output.textContent = "";
+  generatePrayer();
 }
 
 init().catch((error) => {
