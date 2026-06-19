@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title>Prayer Portal orbit cross logo</title>
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="42%" r="48%">
+      <stop offset="0" stop-color="#fff1b8"/>
+      <stop offset=".2" stop-color="#f5c879" stop-opacity=".75"/>
+      <stop offset=".62" stop-color="#35dfff" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#06131f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="14" y1="22" x2="112" y2="104" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset=".48" stop-color="#35dfff"/>
+      <stop offset="1" stop-color="#f5c879"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#06131f"/>
+  <circle cx="64" cy="59" r="58" fill="none" stroke="#8b5cf6" stroke-opacity=".42" stroke-width="1.4"/>
+  <circle cx="64" cy="59" r="48" fill="none" stroke="#35dfff" stroke-opacity=".72" stroke-width="1.8"/>
+  <circle cx="64" cy="59" r="34" fill="none" stroke="#f5c879" stroke-opacity=".42" stroke-width="1.2"/>
+  <circle cx="64" cy="59" r="42" fill="url(#halo)"/>
+  <path d="M0 78l25-33 39 49 29-35 35 35v34H0z" fill="#0b1a26"/>
+  <path d="M0 89l24-20 34 31 25-23 45 32v19H0z" fill="#102536"/>
+  <path d="M64 29v67M43 50h42" stroke="#fff4cf" stroke-width="8" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M64 29v67M43 50h42" stroke="#f5c879" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M27 104h74M38 111h52" stroke="url(#ring)" stroke-opacity=".45" stroke-linecap="round"/>
+</svg>

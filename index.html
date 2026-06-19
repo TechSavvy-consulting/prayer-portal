@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Prayer Portal</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+
+    <main class="app-shell">
+      <section class="phone-stage" aria-labelledby="page-title">
+        <header class="app-header">
+          <div class="brand-lockup">
+            <img src="assets/prayer-logo.svg" alt="" class="brand-mark">
+            <div>
+              <p class="eyebrow">Pray. Grow. Draw closer.</p>
+              <h1 id="page-title">Prayer Portal</h1>
+            </div>
+          </div>
+          <button class="icon-button" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+            <span aria-hidden="true">T</span>
+          </button>
+        </header>
+
+        <section class="hero-visual" aria-label="Prayer focus">
+          <img src="assets/cross-scene.svg" alt="" class="hero-scene">
+          <div class="hero-orbit" aria-hidden="true"></div>
+          <div class="hero-copy">
+            <p>Peace be with you</p>
+            <h2>With Christ</h2>
+            <span>James 4:8</span>
+          </div>
+        </section>
+
+        <section class="daily-card" aria-labelledby="output-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Generated prayer</p>
+              <h2 id="output-title">Ready when you are</h2>
+            </div>
+            <div class="tool-row">
+              <button class="icon-button" id="copy-prayer" type="button" aria-label="Copy prayer" title="Copy prayer">[]</button>
+              <button class="icon-button" id="save-prayer" type="button" aria-label="Save favorite" title="Save favorite">+</button>
+            </div>
+          </div>
+
+          <article id="prayer-output" class="prayer-output">
+            Father, thank You for this beautiful new day and for Your presence in it.
+          </article>
+
+          <div class="meta-strip">
+            <span id="combo-count">Static local database</span>
+            <span id="source-note">No API. No upload. Runs on this computer.</span>
+          </div>
+        </section>
+
+        <section class="qr-card" aria-labelledby="qr-title">
+          <div>
+            <p class="eyebrow">Mobile access</p>
+            <h2 id="qr-title">Scan to Open</h2>
+            <p id="mobile-url">Starting local server...</p>
+          </div>
+          <img id="qr-image" src="assets/prayer-logo.svg" alt="QR code for opening this prayer portal on your phone">
+        </section>
+      </section>
+
+      <section class="control-stage" aria-label="Prayer controls">
+        <form id="prayer-form" class="composer">
+          <section class="control-card">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Create</p>
+                <h2>Prayer Setup</h2>
+              </div>
+            </div>
+
+            <div class="field-grid">
+              <label>
+                Prayer type
+                <select id="prayer-type" name="prayerType"></select>
+              </label>
+
+              <label>
+                Tone
+                <select id="tone" name="tone"></select>
+              </label>
+
+              <label>
+                Length
+                <select id="length" name="length">
+                  <option value="tiny">Very Short</option>
+                  <option value="short" selected>Short</option>
+                  <option value="medium">Medium</option>
+                  <option value="long">Long</option>
+                </select>
+              </label>
+
+              <div class="wide people-header">
+                <div>
+                  <p class="eyebrow">People</p>
+                  <h3>People and Prayer Needs</h3>
+                </div>
+                <button class="icon-button add-request" id="add-person-request" type="button" aria-label="Add another person or prayer request" title="Add another person or prayer request">+</button>
+              </div>
+
+              <div id="people-request-list" class="people-request-list wide"></div>
+
+              <label class="wide">
+                Details to include
+                <textarea id="details" name="details" rows="4" placeholder="Specific names, needs, places, and context"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <section class="control-card">
+            <div class="section-heading compact">
+              <div>
+                <p class="eyebrow">Focus</p>
+                <h2>Pray Over</h2>
+              </div>
+            </div>
+            <div id="theme-list" class="theme-grid"></div>
+          </section>
+
+          <details class="control-card option-drawer">
+            <summary>
+              <span>
+                <small class="eyebrow">More</small>
+                Options
+              </span>
+              <b aria-hidden="true">+</b>
+            </summary>
+            <div class="options-row">
+              <label class="check-option">
+                <input id="include-greeting" type="checkbox" checked>
+                <span>Morning-style greeting</span>
+              </label>
+              <label class="check-option">
+                <input id="include-scripture" type="checkbox">
+                <span>Scripture references</span>
+              </label>
+              <label class="check-option">
+                <input id="include-relationship" type="checkbox" checked>
+                <span>Relationship blessing</span>
+              </label>
+            </div>
+          </details>
+
+          <div class="actions">
+            <button class="primary" id="generate" type="submit">Generate Prayer</button>
+            <button id="regenerate" type="button">Regenerate</button>
+            <button id="clear-form" type="button">Clear</button>
+          </div>
+        </form>
+
+        <section class="favorites control-card" aria-labelledby="favorites-title">
+          <div class="favorites-header">
+            <div>
+              <p class="eyebrow">Saved</p>
+              <h2 id="favorites-title">Favorites</h2>
+            </div>
+            <button id="clear-favorites" type="button">Clear</button>
+          </div>
+          <div id="favorites-list" class="favorites-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Quick actions">
+      <button type="button" data-scroll-target=".phone-stage">Home</button>
+      <button type="button" data-scroll-target=".composer">Create</button>
+      <button type="button" data-scroll-target=".favorites">Saved</button>
+      <button class="primary" type="submit" form="prayer-form">Pray</button>
+    </nav>
+
+    <script src="app.js"></script>
+  </body>
+</html>

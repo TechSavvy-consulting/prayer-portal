@@ -1,0 +1,5 @@
+node_modules/
+.server-test.pid
+npm-debug.log*
+Thumbs.db
+.DS_Store

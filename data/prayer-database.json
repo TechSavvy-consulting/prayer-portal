@@ -1,0 +1,693 @@
+{
+  "version": "1.0.0",
+  "sourceProfile": {
+    "candidateCount": 334,
+    "method": "SMS prayer-style extraction, sanitized into generated fragments only",
+    "styleNotes": [
+      "Gratitude-first prayers addressed to Father, Lord, Jesus, and Holy Spirit.",
+      "Warm morning language with direct prayers over practical situations.",
+      "Repeated themes of wisdom, discernment, healing, protection, peace, grace, provision, and being a blessing.",
+      "Common closing pattern: in Jesus name, Amen."
+    ]
+  },
+  "tones": {
+    "tender": {
+      "label": "Tender",
+      "phrases": [
+        "with a gentle heart",
+        "with tenderness and trust",
+        "with love covering every word",
+        "with a soft spirit before You",
+        "with quiet hope in Your goodness"
+      ]
+    },
+    "bold": {
+      "label": "Bold Faith",
+      "phrases": [
+        "with confident faith",
+        "believing Your promises are true",
+        "standing firmly on Your goodness",
+        "with expectation for Your hand to move",
+        "trusting Your power in this moment"
+      ]
+    },
+    "grateful": {
+      "label": "Grateful",
+      "phrases": [
+        "with gratitude already rising",
+        "noticing the blessings You have placed around us",
+        "thankful before we ask for anything",
+        "with praise for what You have already done",
+        "with a heart that remembers Your faithfulness"
+      ]
+    },
+    "peaceful": {
+      "label": "Peaceful",
+      "phrases": [
+        "resting in Your peace",
+        "slowing our hearts in Your presence",
+        "letting Your peace settle over us",
+        "breathing in the calm of Your nearness",
+        "trusting You with what feels heavy"
+      ]
+    },
+    "romantic": {
+      "label": "Loving",
+      "phrases": [
+        "thankful for the love You are growing",
+        "with love and gratitude woven together",
+        "asking You to keep love at the center",
+        "celebrating the gift of being known and loved",
+        "honoring the covenant love You are forming"
+      ]
+    },
+    "scripture": {
+      "label": "Scripture-Rooted",
+      "phrases": [
+        "anchored in Your Word",
+        "letting Scripture shape our trust",
+        "holding close to what You have spoken",
+        "with Your Word lighting the path",
+        "believing Your truth over our feelings"
+      ]
+    },
+    "simple": {
+      "label": "Simple",
+      "phrases": [
+        "simply and honestly",
+        "with plain trust",
+        "with open hands",
+        "without striving",
+        "with childlike faith"
+      ]
+    },
+    "servant": {
+      "label": "Servant Heart",
+      "phrases": [
+        "ready to be Your hands and feet",
+        "asking for a heart that serves well",
+        "wanting our lives to bless others",
+        "seeking Your kingdom in ordinary things",
+        "willing to love the people You place in our path"
+      ]
+    }
+  },
+  "prayerTypes": {
+    "morning": {
+      "label": "Morning Prayer",
+      "greetings": [
+        "Good morning, Father. Thank You for this beautiful new day.",
+        "Father, thank You for waking us into another day held by Your grace.",
+        "Lord, we welcome this morning with praise and open hands.",
+        "Thank You, Father, for this new day and for Your presence in it.",
+        "Jesus, thank You for meeting us at the start of this day."
+      ],
+      "focus": [
+        "Guide our steps and help us notice where You are already working.",
+        "Fill this day with wisdom, peace, joy, and opportunities to love well.",
+        "Let our words, choices, work, and rest line up with Your heart.",
+        "Help us be blessed and be a blessing to those around us.",
+        "Go before us, walk with us, and keep our hearts aware of You."
+      ]
+    },
+    "food": {
+      "label": "Food Blessing",
+      "greetings": [
+        "Father, thank You for this meal and the hands that helped provide it.",
+        "Lord, we pause with gratitude for this food and this moment.",
+        "Jesus, thank You for daily bread and for the gift of gathering.",
+        "Father, we receive this meal as a reminder of Your provision.",
+        "Lord, thank You for nourishing us in body, heart, and spirit."
+      ],
+      "focus": [
+        "Bless this food to our bodies and our conversation to our hearts.",
+        "Teach us to receive with gratitude and share with generosity.",
+        "Let this table be marked by peace, joy, and thankfulness.",
+        "Provide for those who are hungry and make us attentive to their needs.",
+        "Use this simple meal to remind us that every good gift comes from You."
+      ]
+    },
+    "help": {
+      "label": "Help",
+      "greetings": [
+        "Father, we need Your help and we come to You honestly.",
+        "Lord, we bring this situation to You because You care for us.",
+        "Jesus, meet us here with mercy, strength, and wisdom.",
+        "Father, we lay this need before You and trust Your heart.",
+        "Holy Spirit, help us pray when we do not have all the words."
+      ],
+      "focus": [
+        "Show us the next faithful step and give us courage to take it.",
+        "Work in what we can see and in everything we cannot see.",
+        "Bring order, peace, and provision where things feel uncertain.",
+        "Help us respond with faith instead of fear.",
+        "Let Your grace be enough for this moment and the next one."
+      ]
+    },
+    "understanding": {
+      "label": "Understanding",
+      "greetings": [
+        "Father, give us understanding that comes from You.",
+        "Lord, open our hearts and minds to truth.",
+        "Jesus, help us see clearly and love wisely.",
+        "Holy Spirit, lead us into wisdom and understanding.",
+        "Father, bring light to what feels confusing."
+      ],
+      "focus": [
+        "Help us listen before we answer and seek truth before we react.",
+        "Reveal what is from You and what needs to be surrendered.",
+        "Give us humility to learn and patience to grow.",
+        "Let understanding produce peace, not pride.",
+        "Teach us how to walk forward with clarity and grace."
+      ]
+    },
+    "closer": {
+      "label": "Closer to God",
+      "greetings": [
+        "Father, draw us closer to You today.",
+        "Jesus, awaken a deeper hunger for Your presence.",
+        "Lord, help us know You more and love You better.",
+        "Holy Spirit, lead us into a more surrendered life.",
+        "Father, make our hearts more aware of Your nearness."
+      ],
+      "focus": [
+        "Remove distractions that pull our hearts away from You.",
+        "Teach us to hear Your voice and recognize Your guidance.",
+        "Make prayer, Scripture, worship, and obedience feel alive again.",
+        "Let our love for You overflow into how we love others.",
+        "Shape our desires until they line up with Your kingdom."
+      ]
+    },
+    "healing": {
+      "label": "Healing",
+      "greetings": [
+        "Father, we ask for Your healing presence right now.",
+        "Jesus, You are near to the hurting and powerful to heal.",
+        "Lord, bring restoration to body, mind, heart, and spirit.",
+        "Father, we trust You with every place that needs healing.",
+        "Holy Spirit, breathe comfort and renewal into this need."
+      ],
+      "focus": [
+        "Bring wisdom for practical care and supernatural grace for full restoration.",
+        "Let pain, fear, and discouragement give way to peace and strength.",
+        "Guide every decision, appointment, treatment, conversation, and step of recovery.",
+        "Restore what has been strained, wounded, tired, or broken.",
+        "Let healing become a testimony of Your goodness and mercy."
+      ]
+    },
+    "relationship": {
+      "label": "Relationship",
+      "greetings": [
+        "Father, thank You for the gift of love and relationship.",
+        "Lord, keep love at the center of this relationship.",
+        "Jesus, teach us to love with patience, truth, and grace.",
+        "Father, thank You for the story You are writing between hearts.",
+        "Holy Spirit, guide every conversation, decision, and tender place."
+      ],
+      "focus": [
+        "Help us serve each other with humility and joy.",
+        "Protect unity, deepen trust, and make room for honest understanding.",
+        "Let love reflect Your goodness, patience, forgiveness, and delight.",
+        "Bless the future being built and guide each step with wisdom.",
+        "Keep this relationship surrendered to You and full of grace."
+      ]
+    },
+    "work": {
+      "label": "Work and Business",
+      "greetings": [
+        "Father, we invite You into this work.",
+        "Lord, bless the labor of our hands today.",
+        "Jesus, guide every decision, task, customer, and conversation.",
+        "Father, give wisdom for the work in front of us.",
+        "Holy Spirit, lead this business and every opportunity connected to it."
+      ],
+      "focus": [
+        "Bring the right people, the right timing, and the right open doors.",
+        "Help the work be excellent, honest, useful, and full of peace.",
+        "Give creative strategy, clear priorities, and steady energy.",
+        "Protect from distraction, confusion, and unnecessary stress.",
+        "Let provision grow in a way that blesses families and serves others well."
+      ]
+    },
+    "travel": {
+      "label": "Travel",
+      "greetings": [
+        "Father, we ask for Your hand over this travel.",
+        "Lord, go before every mile and every stop.",
+        "Jesus, surround this trip with protection and peace.",
+        "Father, guide the timing, weather, roads, and decisions.",
+        "Holy Spirit, keep everyone aware, calm, and safe."
+      ],
+      "focus": [
+        "Bring safe passage, good rest, clear minds, and joyful moments.",
+        "Protect vehicles, flights, luggage, schedules, and every person involved.",
+        "Let the journey be smooth and the destination be blessed.",
+        "Give patience for delays and gratitude for every provision.",
+        "Bring everyone home with stories of Your goodness."
+      ]
+    },
+    "family": {
+      "label": "Family",
+      "greetings": [
+        "Father, we lift this family to You.",
+        "Lord, cover our home and the people we love.",
+        "Jesus, bring grace into every family relationship.",
+        "Father, thank You for the people You have placed in our lives.",
+        "Holy Spirit, move through this family with healing and wisdom."
+      ],
+      "focus": [
+        "Bring peace where there has been tension and tenderness where hearts are tired.",
+        "Protect the children, guide the parents, and strengthen every generation.",
+        "Help us forgive quickly, speak gently, and love with patience.",
+        "Restore what needs restoring and celebrate what is already good.",
+        "Let this family become a place of blessing, safety, and truth."
+      ]
+    },
+    "decision": {
+      "label": "Decision",
+      "greetings": [
+        "Father, we ask for wisdom in this decision.",
+        "Lord, light the path and close the wrong doors.",
+        "Jesus, help us choose what honors You.",
+        "Holy Spirit, give discernment beyond our own understanding.",
+        "Father, we surrender this decision to Your guidance."
+      ],
+      "focus": [
+        "Make the next step clear and give peace when it is time to move.",
+        "Reveal motives, timing, risks, and blessings with clarity.",
+        "Let wise counsel, Scripture, and Your peace confirm the path.",
+        "Protect us from fear, pressure, and rushing.",
+        "Guide the outcome toward provision, peace, and purpose."
+      ]
+    },
+    "protection": {
+      "label": "Protection",
+      "greetings": [
+        "Father, place Your protection around this situation.",
+        "Lord, surround us with Your peace and covering.",
+        "Jesus, be our shelter and strength.",
+        "Father, guard every person, place, and step involved.",
+        "Holy Spirit, keep us alert, wise, and covered by grace."
+      ],
+      "focus": [
+        "Protect bodies, hearts, homes, travel, work, and relationships.",
+        "Give timely warning, wise choices, and calm responses.",
+        "Keep harm, confusion, and fear from taking root.",
+        "Let Your peace stand guard over every vulnerable place.",
+        "Help us trust You while also taking wise action."
+      ]
+    },
+    "gratitude": {
+      "label": "Gratitude",
+      "greetings": [
+        "Father, thank You for Your goodness.",
+        "Lord, we pause to remember how faithful You have been.",
+        "Jesus, thank You for the grace that keeps meeting us.",
+        "Father, our hearts are full of gratitude.",
+        "Holy Spirit, help us notice every gift with joy."
+      ],
+      "focus": [
+        "Thank You for blessings we see and blessings we do not even recognize yet.",
+        "Thank You for answered prayers, quiet provision, and daily mercy.",
+        "Let gratitude change the atmosphere of our thoughts and words.",
+        "Teach us to celebrate without forgetting the Giver.",
+        "Make thankfulness overflow into generosity and worship."
+      ]
+    },
+    "bedtime": {
+      "label": "Bedtime",
+      "greetings": [
+        "Father, we end this day in Your peace.",
+        "Lord, thank You for carrying us through today.",
+        "Jesus, settle our hearts as we rest.",
+        "Father, we place the night in Your hands.",
+        "Holy Spirit, quiet our minds and refresh our bodies."
+      ],
+      "focus": [
+        "Help us release what is unfinished and trust You through the night.",
+        "Bring restorative sleep, peaceful dreams, and renewed strength.",
+        "Forgive what needs forgiving and heal what felt heavy today.",
+        "Guard this home and everyone we love.",
+        "Let tomorrow begin with fresh mercy and a clearer heart."
+      ]
+    },
+    "apology": {
+      "label": "Forgiveness",
+      "greetings": [
+        "Father, soften our hearts with forgiveness.",
+        "Jesus, teach us to give and receive grace.",
+        "Lord, help us own what is ours with humility.",
+        "Holy Spirit, bring truth without shame and healing without delay.",
+        "Father, restore what harsh words or wounded choices have strained."
+      ],
+      "focus": [
+        "Give courage to apologize clearly and listen honestly.",
+        "Remove defensiveness and replace it with humility.",
+        "Help forgiveness become a doorway to deeper trust.",
+        "Heal the hurt underneath the conflict.",
+        "Let peace, patience, and love have the final word."
+      ]
+    },
+    "community": {
+      "label": "Community",
+      "greetings": [
+        "Father, we pray over our community.",
+        "Lord, bring light and hope to the people around us.",
+        "Jesus, help us love our neighbors well.",
+        "Holy Spirit, move through the places where people are hurting.",
+        "Father, use us to bring blessing where we live and serve."
+      ],
+      "focus": [
+        "Guide leaders, strengthen helpers, and comfort those in need.",
+        "Open doors for service, generosity, truth, and healing.",
+        "Bring protection, unity, and compassion into shared spaces.",
+        "Help us notice the person who needs encouragement today.",
+        "Let Your kingdom be visible through ordinary acts of love."
+      ]
+    }
+  },
+  "invocations": [
+    "Father, we come before You {tonePhrase}.",
+    "Lord, we lift this moment to You {tonePhrase}.",
+    "Jesus, we invite You into every detail {tonePhrase}.",
+    "Father God, thank You for being near {tonePhrase}.",
+    "Holy Spirit, guide this prayer and guide our hearts {tonePhrase}.",
+    "Lord, we surrender this day and this situation to You {tonePhrase}.",
+    "Father, we praise You for Your presence before we ask for anything.",
+    "Jesus, thank You for meeting us with grace, truth, and love.",
+    "Father, we trust Your goodness in what we understand and what we do not.",
+    "Lord, make our hearts attentive to Your voice."
+  ],
+  "gratitude": [
+    "Thank You for Your love, mercy, grace, and steady provision.",
+    "Thank You for hearing our prayers and caring about the details of our lives.",
+    "Thank You for blessings we can see and blessings You are arranging quietly.",
+    "Thank You for the people You have placed in our lives and the love You are growing.",
+    "Thank You for Your presence in ordinary moments and important decisions.",
+    "Thank You for guiding us when the path is clear and when it is still unfolding.",
+    "Thank You that Your grace meets us before we have everything figured out.",
+    "Thank You for peace that can settle over a situation before it changes.",
+    "Thank You for wisdom, strength, and mercy for today.",
+    "Thank You for being a good Father who loves, teaches, corrects, and provides.",
+    "Thank You for answered prayers and for the faith to keep praying.",
+    "Thank You for the beauty of love, family, work, service, and rest.",
+    "Thank You for drawing us closer to You through every season.",
+    "Thank You that we can bring practical needs and deep heart needs to You.",
+    "Thank You for Your hand over our homes, relationships, plans, and purpose."
+  ],
+  "bridges": [
+    "We ask for Your hand over {situation}.",
+    "We pray over {people} and everything connected to {situation}.",
+    "We bring {details} into Your light and ask You to lead us.",
+    "Where this feels complicated, make the next faithful step clear.",
+    "Where there is pressure, replace it with peace and wisdom.",
+    "Where there is need, bring provision in the way only You can.",
+    "Where there is pain, bring comfort, healing, and patience.",
+    "Where there is uncertainty, give discernment and steady trust.",
+    "Help us do what is wise in the natural while trusting You for the supernatural.",
+    "Let this become a place where Your goodness can be seen.",
+    "Guide our hearts, words, timing, and decisions.",
+    "Show us what is ours to carry and what we need to release to You.",
+    "Protect us from fear, pride, confusion, and rushed choices.",
+    "Give us eyes to see the blessings already present.",
+    "Let Your peace lead instead of our anxiety."
+  ],
+  "relationshipBlessings": [
+    "Bless the love between us with patience, laughter, humility, and truth.",
+    "Help us love each other in a way that reflects Your kindness.",
+    "Keep our hearts soft toward each other and quick to listen.",
+    "Let our relationship be a testimony of grace, healing, and joy.",
+    "Teach us to serve each other well and keep You at the center.",
+    "Grow trust, tenderness, and unity in every season.",
+    "Guide the future we are building and make it full of Your peace.",
+    "Let our love make both of us more generous, faithful, and alive in You.",
+    "Protect the covenant You are forming and make it strong in grace.",
+    "Help us celebrate each other as gifts from Your hand."
+  ],
+  "themes": {
+    "healing": {
+      "label": "Healing",
+      "lines": [
+        "Bring healing to every place that is strained, painful, tired, or wounded.",
+        "Restore strength, mobility, peace, and comfort with Your gentle power.",
+        "Guide every practical step of care with wisdom and discernment.",
+        "Let healing move through body, mind, heart, and spirit.",
+        "Replace discouragement with hope and pain with Your sustaining grace.",
+        "Let recovery be steady, complete, and full of testimony.",
+        "Bring the right helpers, the right timing, and the right treatment.",
+        "Calm fear around the healing process and build faith for restoration.",
+        "Let every cell, thought, and breath come under Your peace.",
+        "Make this need a place where Your compassion is deeply known."
+      ]
+    },
+    "wisdom": {
+      "label": "Wisdom",
+      "lines": [
+        "Give wisdom that is clear, humble, practical, and rooted in love.",
+        "Help us recognize the difference between pressure and Your leading.",
+        "Let wise counsel, Scripture, and peace confirm the next step.",
+        "Teach us to pause long enough to hear You.",
+        "Reveal what matters most and what can wait.",
+        "Give creative strategy for the work and decisions ahead.",
+        "Help us think clearly without losing tenderness.",
+        "Let Your wisdom guide conversations, plans, money, timing, and priorities.",
+        "Make the path plain one faithful step at a time.",
+        "Guard us from choices made in fear or hurry."
+      ]
+    },
+    "understanding": {
+      "label": "Understanding",
+      "lines": [
+        "Bring understanding where there has been confusion or miscommunication.",
+        "Help hearts hear what is truly being said underneath the words.",
+        "Give patience to listen and courage to speak with grace.",
+        "Reveal truth in a way that heals instead of harms.",
+        "Let understanding produce compassion and better choices.",
+        "Show us where assumptions need to be surrendered.",
+        "Open our eyes to what You are teaching through this.",
+        "Help us see people and situations with mercy and clarity.",
+        "Let humility make room for peace.",
+        "Teach us to understand before trying to be understood."
+      ]
+    },
+    "peace": {
+      "label": "Peace",
+      "lines": [
+        "Let Your peace settle over every thought, room, conversation, and decision.",
+        "Quiet anxious thoughts and replace them with steady trust.",
+        "Make peace stronger than the circumstances around us.",
+        "Help us carry calm into places that feel tense.",
+        "Guard our hearts and minds with Your presence.",
+        "Let peace guide our timing and our words.",
+        "Bring rest where stress has been loud.",
+        "Help us breathe, release, and remember You are near.",
+        "Let our home and relationships be marked by peace.",
+        "Make us peacemakers without avoiding truth."
+      ]
+    },
+    "protection": {
+      "label": "Protection",
+      "lines": [
+        "Place Your protection around every person, home, vehicle, plan, and vulnerable place.",
+        "Give timely warnings, wise instincts, and calm decisions.",
+        "Protect from harm, confusion, distraction, and unnecessary trouble.",
+        "Surround the people involved with safety and peace.",
+        "Guide travel, weather, timing, and every moving part.",
+        "Let Your presence be a covering over what we cannot control.",
+        "Keep hearts protected from fear and minds protected from lies.",
+        "Bring safety without panic and wisdom without worry.",
+        "Guard the doors that need guarding and open the ones that are from You.",
+        "Help us rest under Your care."
+      ]
+    },
+    "discernment": {
+      "label": "Discernment",
+      "lines": [
+        "Give discernment to know what is from You and what is not.",
+        "Help us test thoughts, motives, opportunities, and timing with wisdom.",
+        "Reveal anything misleading, rushed, or out of line with Your heart.",
+        "Let Your Spirit make the right path feel steady and clear.",
+        "Give us courage to say yes, no, or wait when You lead.",
+        "Help us notice peace, fruit, and truth.",
+        "Protect us from confusion dressed up as opportunity.",
+        "Bring clarity without striving.",
+        "Teach us to follow Your voice above every competing noise.",
+        "Let discernment serve love, not suspicion."
+      ]
+    },
+    "provision": {
+      "label": "Provision",
+      "lines": [
+        "Provide what is needed with timing that builds faith.",
+        "Open the right doors and bring the right resources.",
+        "Bless the work, planning, conversations, and opportunities connected to this need.",
+        "Help us steward what You provide with gratitude and wisdom.",
+        "Meet practical needs in a way that points back to Your goodness.",
+        "Bring favor, clarity, and enough for what You have called us to do.",
+        "Let provision arrive with peace, not pressure.",
+        "Teach us generosity even while we are asking for help.",
+        "Make us attentive to both miracle and ordinary provision.",
+        "Thank You that You care about every detail."
+      ]
+    },
+    "gratitude": {
+      "label": "Gratitude",
+      "lines": [
+        "Keep gratitude alive in us before, during, and after the answer comes.",
+        "Help us remember answered prayers and quiet mercies.",
+        "Let thankfulness shift the atmosphere of this day.",
+        "Teach us to celebrate Your goodness without rushing past it.",
+        "Give us eyes to see gifts hidden inside ordinary moments.",
+        "Let gratitude soften our words and strengthen our faith.",
+        "Thank You for what You have done, what You are doing, and what You will do.",
+        "Make praise our first response instead of our last resort.",
+        "Help us notice the beauty around us and the people You have given us.",
+        "Let our gratitude become generosity."
+      ]
+    },
+    "forgiveness": {
+      "label": "Forgiveness",
+      "lines": [
+        "Give grace to forgive what needs forgiving and repair what needs repairing.",
+        "Help us confess honestly without shame or excuses.",
+        "Heal the places where hurt has made hearts guarded.",
+        "Let mercy lead the conversation.",
+        "Make apologies clear, humble, and full of love.",
+        "Help us release bitterness before it takes root.",
+        "Teach us to hold truth and grace together.",
+        "Restore trust with patience and consistent love.",
+        "Let forgiveness become a new beginning.",
+        "Remind us how much grace we have received."
+      ]
+    },
+    "strength": {
+      "label": "Strength",
+      "lines": [
+        "Give strength for what must be carried today.",
+        "Renew energy, courage, focus, and hope.",
+        "Help us keep going without becoming hard-hearted.",
+        "Let Your strength show up in our weakness.",
+        "Give endurance for the long road and joy for the next step.",
+        "Strengthen hands for work and hearts for love.",
+        "Help us rest without guilt and act without fear.",
+        "Make us steady, patient, and faithful.",
+        "Lift what feels heavy and teach us how to carry what remains.",
+        "Let strength be joined with tenderness."
+      ]
+    },
+    "joy": {
+      "label": "Joy",
+      "lines": [
+        "Let joy rise again in simple and surprising ways.",
+        "Bring laughter, delight, and lightness into this day.",
+        "Help us notice beauty and celebrate small blessings.",
+        "Let joy be deeper than circumstances.",
+        "Restore the gladness that stress has tried to steal.",
+        "Make our love, work, and service full of life.",
+        "Let joy strengthen us and bless the people around us.",
+        "Help us receive happiness without fear of losing it.",
+        "Turn gratitude into worship and worship into joy.",
+        "Let Your goodness make our hearts bright."
+      ]
+    },
+    "service": {
+      "label": "Service",
+      "lines": [
+        "Give us servant hearts and willing hands.",
+        "Show us who needs encouragement, help, patience, or prayer today.",
+        "Let us be Your hands and feet in practical ways.",
+        "Keep service joyful instead of performative.",
+        "Give humility to serve without needing attention.",
+        "Use ordinary conversations to bring hope.",
+        "Let our work and relationships build Your kingdom.",
+        "Help us bless others from a place of being loved by You.",
+        "Make generosity natural and wisdom steady.",
+        "Teach us to see interruptions as opportunities for love."
+      ]
+    },
+    "faith": {
+      "label": "Faith",
+      "lines": [
+        "Grow our faith while we wait and while we walk.",
+        "Help us believe Your promises more than our fears.",
+        "Make trust stronger than the need to control every outcome.",
+        "Remind us of the times You have already been faithful.",
+        "Give courage to pray boldly and live faithfully.",
+        "Let faith become action, patience, and peace.",
+        "Help unbelief become honest conversation with You.",
+        "Anchor us in Your character when circumstances shift.",
+        "Teach us to expect Your goodness without demanding our own way.",
+        "Make our faith a blessing to others."
+      ]
+    },
+    "guidance": {
+      "label": "Guidance",
+      "lines": [
+        "Guide every step, word, plan, and open door.",
+        "Go before us and make the right path clear.",
+        "Help us follow Your timing instead of forcing our own.",
+        "Lead through peace, wisdom, Scripture, counsel, and circumstance.",
+        "Close what needs closing and open what is truly from You.",
+        "Help us move when it is time and wait when waiting is wise.",
+        "Make obedience feel possible through grace.",
+        "Let Your guidance touch practical details and heart-level decisions.",
+        "Keep us aligned with Your purpose.",
+        "Teach us to walk with You, not just ask for directions."
+      ]
+    },
+    "surrender": {
+      "label": "Surrender",
+      "lines": [
+        "We surrender our time, energy, desires, fears, and plans to You.",
+        "Search our hearts and lead us back into alignment with Your will.",
+        "Help us release control without becoming passive.",
+        "Teach us to trust You with outcomes and timing.",
+        "Let surrender bring freedom, not fear.",
+        "Show us what to lay down and what to pick up in faith.",
+        "Make our desires honest and open before You.",
+        "Help us give You the hidden places too.",
+        "Let obedience flow from love.",
+        "Keep our hearts yielded and our steps faithful."
+      ]
+    }
+  },
+  "closings": [
+    "Thank You, Father. In Jesus name, Amen.",
+    "We praise You and trust You. In Jesus name, Amen.",
+    "Thank You for hearing us and being with us. In Jesus name, Amen.",
+    "We give this to You with grateful hearts. In Jesus name, Amen.",
+    "Guide us, keep us, and use us today. In Jesus name, Amen.",
+    "Let Your will be done with love, wisdom, and peace. In Jesus name, Amen.",
+    "We receive Your grace for this moment. In Jesus name, Amen.",
+    "Thank You for Your presence, provision, and protection. In Jesus name, Amen.",
+    "We trust You with all of it. In Jesus name, Amen.",
+    "May our lives reflect Your goodness today. In Jesus name, Amen.",
+    "We love You, Lord, and we thank You. Amen.",
+    "Let this prayer become faith in motion. In Jesus name, Amen.",
+    "Thank You for working in what we see and what we do not. In Jesus name, Amen.",
+    "Keep our hearts close to You. In Jesus name, Amen.",
+    "We bless Your name and rest in Your care. Amen."
+  ],
+  "scriptureReferences": [
+    "James 1:5",
+    "Philippians 4:6-7",
+    "Proverbs 3:5-6",
+    "Psalm 91",
+    "Psalm 23",
+    "Isaiah 41:10",
+    "Matthew 6:33",
+    "Romans 8:28",
+    "2 Timothy 1:7",
+    "Numbers 6:24-26",
+    "John 14:27",
+    "Psalm 46:10",
+    "Ephesians 3:16-19",
+    "Colossians 3:12-15",
+    "1 Corinthians 13:4-7",
+    "Psalm 121",
+    "Jeremiah 29:11",
+    "Lamentations 3:22-23",
+    "Isaiah 26:3",
+    "Galatians 5:22-23"
+  ]
+}

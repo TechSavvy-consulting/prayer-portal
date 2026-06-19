@@ -1,0 +1,16 @@
+{
+  "name": "prayer-portal",
+  "version": "1.0.0",
+  "description": "Local, API-free prayer generator built from a sanitized style profile extracted from the SMS backup. The interface is mobile-first, with a dark devotional app style, Christian cross graphics, quick prayer setup controls, and a bottom action bar on phones.",
+  "main": "server/local-server.cjs",
+  "scripts": {
+    "start": "node server/local-server.cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
