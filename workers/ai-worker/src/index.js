@@ -1,4 +1,4 @@
-const DEFAULT_MODEL = "gemini-2.0-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash-lite";
 
 const STYLE_INSTRUCTIONS = `
 You generate short Christian prayers for a prayer portal.
