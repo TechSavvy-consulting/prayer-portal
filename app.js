@@ -1,7 +1,8 @@
 const state = {
   db: null,
   lastPrayer: "",
-  nonce: 0
+  nonce: 0,
+  lastProvider: "static"
 };
 
 const elements = {
@@ -84,6 +85,10 @@ const bibleBookCodes = {
   Lamentations: "LAM",
   Galatians: "GAL"
 };
+
+function aiEndpoint() {
+  return String(window.PRAYER_PORTAL_AI_URL || "").trim();
+}
 
 function hashString(value) {
   let hash = 2166136261;
@@ -251,6 +256,10 @@ function selectedThemes() {
     .map((input) => input.value);
 }
 
+function selectedThemeLabels() {
+  return selectedThemes().map((key) => state.db.themes[key]?.label || key);
+}
+
 function lengthSettings(length) {
   if (length === "tiny") return { gratitude: 0, bridge: 0, themeLines: 0, typeFocus: 0, relationship: 0, scripture: 1 };
   if (length === "short") return { gratitude: 0, bridge: 0, themeLines: 1, typeFocus: 0, relationship: 0, scripture: 1 };
@@ -269,6 +278,25 @@ function currentFormSeed() {
     selectedThemes().join(","),
     state.nonce
   ].join("|");
+}
+
+function currentPrayerTypeLabel() {
+  return state.db.prayerTypes[elements.prayerType.value]?.label || elements.prayerType.value || "Morning Prayer";
+}
+
+function currentToneLabel() {
+  return state.db.tones[elements.tone.value]?.label || elements.tone.value || "Simple";
+}
+
+function aiPayload() {
+  return {
+    prayerType: currentPrayerTypeLabel(),
+    tone: currentToneLabel(),
+    length: elements.length.value,
+    details: cleanInput(elements.details.value, ""),
+    themes: selectedThemeLabels(),
+    peopleRequests: collectPersonRequests()
+  };
 }
 
 function buildPrayer() {
@@ -323,9 +351,56 @@ function buildPrayer() {
     .join("\n\n");
 
   state.lastPrayer = prayer;
+  state.lastProvider = "static";
   elements.output.textContent = prayer;
   elements.outputTitle.textContent = type.label;
-  elements.sourceNote.textContent = `${tone.label} tone · Simple biblical style`;
+  elements.sourceNote.textContent = aiEndpoint()
+    ? `${tone.label} tone · Static fallback`
+    : `${tone.label} tone · Simple biblical style`;
+  return prayer;
+}
+
+async function generateAiPrayer() {
+  const endpoint = aiEndpoint();
+  if (!endpoint) return null;
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(aiPayload())
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`AI request failed: ${message.slice(0, 240)}`);
+  }
+
+  const data = await response.json();
+  if (!data.prayer) throw new Error("AI response did not include a prayer");
+  state.lastPrayer = data.prayer;
+  state.lastProvider = data.provider || "ai";
+  elements.output.textContent = data.prayer;
+  elements.outputTitle.textContent = currentPrayerTypeLabel();
+  elements.sourceNote.textContent = `${currentToneLabel()} tone · AI generated`;
+  return data.prayer;
+}
+
+async function generatePrayer() {
+  if (aiEndpoint()) {
+    const previousNote = elements.sourceNote.textContent;
+    elements.sourceNote.textContent = "Generating with AI...";
+    try {
+      await generateAiPrayer();
+      showPrayerResult();
+      return;
+    } catch (error) {
+      console.warn(error);
+      elements.sourceNote.textContent = `${previousNote || "AI unavailable"} · using fallback`;
+    }
+  }
+
+  buildPrayer();
+  showPrayerResult();
 }
 
 function showPrayerResult() {
@@ -511,14 +586,12 @@ function saveCurrentPrayer() {
 function bindEvents() {
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
-    buildPrayer();
-    showPrayerResult();
+    generatePrayer();
   });
 
   elements.regenerate.addEventListener("click", () => {
     state.nonce += 1;
-    buildPrayer();
-    showPrayerResult();
+    generatePrayer();
   });
 
   elements.clearForm.addEventListener("click", () => {

@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "prayer-portal-ai",
+  "main": "src/index.js",
+  "compatibility_date": "2026-06-19",
+  "vars": {
+    "GEMINI_MODEL": "gemini-2.0-flash",
+    "ALLOWED_ORIGINS": "https://techsavvy-consulting.github.io,http://127.0.0.1:8787,http://localhost:8787"
+  }
+}

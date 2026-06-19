@@ -4,7 +4,10 @@
   "description": "Local, API-free prayer generator built from a sanitized style profile extracted from the SMS backup. The interface is mobile-first, with a dark devotional app style, Christian cross graphics, quick prayer setup controls, and a bottom action bar on phones.",
   "main": "server/local-server.cjs",
   "scripts": {
-    "start": "node server/local-server.cjs"
+    "start": "node server/local-server.cjs",
+    "worker:dev": "wrangler dev --config workers/ai-worker/wrangler.jsonc",
+    "worker:deploy": "wrangler deploy --config workers/ai-worker/wrangler.jsonc",
+    "worker:secret": "wrangler secret put GEMINI_API_KEY --config workers/ai-worker/wrangler.jsonc"
   },
   "keywords": [],
   "author": "",

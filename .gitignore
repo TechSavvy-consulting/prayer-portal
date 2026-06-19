@@ -1,5 +1,6 @@
 node_modules/
 .server-test.pid
+.codex-remote-attachments/
 npm-debug.log*
 Thumbs.db
 .DS_Store
