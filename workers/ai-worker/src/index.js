@@ -9,6 +9,9 @@ Follow these rules every time:
 - Do not sound generic, theatrical, mystical, or preachy.
 - Pray to Father/Lord/Jesus naturally.
 - Include the provided people and requests in context, not as raw notes.
+- Never output a bullet list of people or requests inside the prayer.
+- Weave names and needs into natural prayer sentences, for example: "Please give Sarah peace and courage as she faces this work decision."
+- If multiple people are included, pray over each person in connected sentences or short paragraphs that flow.
 - Bring requests to God plainly, ask for wisdom, peace, healing, protection, discernment, or other selected themes when relevant.
 - Surrender to God's will.
 - Close in Jesus name, Amen.
@@ -76,11 +79,48 @@ function cleanText(value, maxLength = 500) {
     .slice(0, maxLength);
 }
 
+function cleanList(values, maxItems = 10, maxLength = 120) {
+  return Array.isArray(values)
+    ? values.map((item) => cleanText(item, maxLength)).filter(Boolean).slice(0, maxItems)
+    : [];
+}
+
+function normalizeStyleContext(input = {}) {
+  const selectedPrayerTypeTemplate = input.selectedPrayerTypeTemplate || {};
+  const selectedToneTemplate = input.selectedToneTemplate || {};
+  const selectedThemeTemplates = Array.isArray(input.selectedThemeTemplates)
+    ? input.selectedThemeTemplates.slice(0, 12).map((theme) => ({
+      key: cleanText(theme.key, 40),
+      label: cleanText(theme.label, 60),
+      lines: cleanList(theme.lines, 4, 180),
+      conciseLines: cleanList(theme.conciseLines, 3, 140)
+    })).filter((theme) => theme.label || theme.key)
+    : [];
+
+  return {
+    sourceStyleNotes: cleanList(input.sourceStyleNotes, 8, 220),
+    selectedPrayerTypeTemplate: {
+      label: cleanText(selectedPrayerTypeTemplate.label, 80),
+      greetings: cleanList(selectedPrayerTypeTemplate.greetings, 5, 180),
+      focus: cleanList(selectedPrayerTypeTemplate.focus, 5, 180)
+    },
+    selectedToneTemplate: {
+      label: cleanText(selectedToneTemplate.label, 80),
+      phrases: cleanList(selectedToneTemplate.phrases, 6, 120)
+    },
+    selectedThemeTemplates,
+    bridgePatterns: cleanList(input.bridgePatterns, 8, 180),
+    gratitudePatterns: cleanList(input.gratitudePatterns, 6, 180),
+    closingPatterns: cleanList(input.closingPatterns, 8, 160),
+    relationshipBlessings: cleanList(input.relationshipBlessings, 6, 180)
+  };
+}
+
 function normalizePayload(input) {
   const peopleRequests = Array.isArray(input.peopleRequests)
     ? input.peopleRequests.slice(0, 8).map((item) => ({
-      person: cleanText(item.person, 90),
-      request: cleanText(item.request, 180)
+      person: cleanText(item.person || item.name, 90),
+      request: cleanText(item.request || item.need, 180)
     })).filter((item) => item.person || item.request)
     : [];
 
@@ -92,13 +132,27 @@ function normalizePayload(input) {
     : [];
 
   return {
-    prayerType: cleanText(input.prayerType, 80) || "Morning Prayer",
+    settings: {
+      prayerTypeKey: cleanText(input.settings?.prayerTypeKey, 60),
+      prayerTypeLabel: cleanText(input.settings?.prayerTypeLabel, 80),
+      toneKey: cleanText(input.settings?.toneKey, 60),
+      toneLabel: cleanText(input.settings?.toneLabel, 80),
+      length: cleanText(input.settings?.length, 20),
+      prayOverKeys: cleanList(input.settings?.prayOverKeys, 12, 50),
+      prayOverLabels: cleanList(input.settings?.prayOverLabels, 12, 60),
+      useLocalDatabase: Boolean(input.settings?.useLocalDatabase)
+    },
+    prayerType: cleanText(input.prayerType, 80) || "General Prayer",
     tone: cleanText(input.tone, 80) || "Simple",
     length: ["tiny", "short", "medium", "long"].includes(input.length) ? input.length : "short",
     details: cleanText(input.details, 600),
     themes: Array.isArray(input.themes) ? input.themes.map((item) => cleanText(item, 60)).filter(Boolean).slice(0, 12) : [],
+    themeKeys: cleanList(input.themeKeys, 12, 50),
     peopleRequests,
-    scriptureOptions
+    scriptureOptions,
+    selectedScriptureReferences: cleanList(input.selectedScriptureReferences, 6, 40),
+    styleContext: normalizeStyleContext(input.styleContext),
+    previousOutput: cleanText(input.previousOutput, 1200)
   };
 }
 
@@ -113,19 +167,66 @@ function userPrompt(payload) {
   const scriptureOptions = payload.scriptureOptions.length
     ? payload.scriptureOptions.map((item) => `- ${item.reference}: ${item.topics.join(", ")}`).join("\n")
     : "- none";
+  const style = payload.styleContext;
+  const themeTemplates = style.selectedThemeTemplates.length
+    ? style.selectedThemeTemplates.map((theme) => {
+      const examples = [...theme.conciseLines, ...theme.lines].slice(0, 4).join(" | ");
+      return `- ${theme.label || theme.key}: ${examples}`;
+    }).join("\n")
+    : "- none selected";
+  const requestGuidance = payload.peopleRequests.length
+    ? "Write natural sentences that bring each person and need to God. Do not use labels like 'People and requests' or repeat the input format."
+    : "No specific person was entered; keep the prayer general and heartfelt.";
 
   return `
 Create one prayer with these inputs.
 
-Prayer type: ${payload.prayerType}
-Tone: ${payload.tone}
-Length: ${payload.length}
-Pray over themes: ${payload.themes.join(", ") || "none selected"}
-People and requests:
+Settings:
+- Prayer type: ${payload.settings.prayerTypeLabel || payload.prayerType} (${payload.settings.prayerTypeKey || "unknown key"})
+- Tone: ${payload.settings.toneLabel || payload.tone} (${payload.settings.toneKey || "unknown key"})
+- Length: ${payload.length}
+- Pray over selected: ${payload.settings.prayOverLabels.join(", ") || payload.themes.join(", ") || "none selected"}
+- Pray over keys: ${payload.settings.prayOverKeys.join(", ") || payload.themeKeys.join(", ") || "none selected"}
+- Local database mode checked: ${payload.settings.useLocalDatabase ? "yes" : "no"}
+
+People and prayer needs as source data, not output format:
 ${requests}
 Details: ${payload.details || "none"}
+
+Current/previous prayer output, if present. Use it only to avoid repeating awkward phrasing and to improve flow:
+${payload.previousOutput || "none"}
+
+Style profile from the local database:
+Source notes:
+${style.sourceStyleNotes.map((note) => `- ${note}`).join("\n") || "- none"}
+Prayer type template greetings:
+${style.selectedPrayerTypeTemplate.greetings.map((line) => `- ${line}`).join("\n") || "- none"}
+Prayer type template focus lines:
+${style.selectedPrayerTypeTemplate.focus.map((line) => `- ${line}`).join("\n") || "- none"}
+Tone phrases:
+${style.selectedToneTemplate.phrases.map((line) => `- ${line}`).join("\n") || "- none"}
+Selected Pray Over theme wording:
+${themeTemplates}
+Bridge patterns:
+${style.bridgePatterns.map((line) => `- ${line}`).join("\n") || "- none"}
+Gratitude patterns:
+${style.gratitudePatterns.map((line) => `- ${line}`).join("\n") || "- none"}
+Closing patterns:
+${style.closingPatterns.map((line) => `- ${line}`).join("\n") || "- none"}
+Relationship blessing patterns:
+${style.relationshipBlessings.map((line) => `- ${line}`).join("\n") || "- none"}
+
 Allowed scripture references:
 ${scriptureOptions}
+Preferred scripture references from current settings:
+${payload.selectedScriptureReferences.join(", ") || "none"}
+
+Flow instructions:
+- ${requestGuidance}
+- Keep the prayer in the database style: direct, warm, practical, biblical, and not wordy.
+- Use the template examples for style and rhythm, but do not copy a whole template line unless it fits naturally.
+- If the selected length is tiny or short, prioritize the people/needs and one clear ask over extra decoration.
+- Do not say "You know the details:" unless it sounds natural in the prayer.
 
 Return valid JSON only. The prayer must be plain text with no title, markdown, bullets, or quotation marks inside the prayer string. The scriptureReferences array must contain only exact references from the allowed list.
 `;
@@ -164,7 +265,7 @@ async function generatePrayer(payload, env) {
 
   const model = env.GEMINI_MODEL || DEFAULT_MODEL;
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
-  const maxOutputTokens = payload.length === "long" ? 420 : payload.length === "medium" ? 320 : 220;
+  const maxOutputTokens = payload.length === "long" ? 520 : payload.length === "medium" ? 380 : 260;
 
   const response = await fetch(url, {
     method: "POST",
@@ -231,7 +332,7 @@ export default {
       }
 
       const contentLength = Number(request.headers.get("Content-Length") || "0");
-      if (contentLength > 12000) {
+      if (contentLength > 24000) {
         return jsonResponse({ error: "Request too large" }, 413, origin);
       }
 

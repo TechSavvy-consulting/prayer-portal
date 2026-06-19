@@ -313,6 +313,15 @@ function selectedThemeLabels() {
   return selectedThemes().map((key) => state.db.themes[key]?.label || key);
 }
 
+function selectedThemeSamples() {
+  return selectedThemes().map((key) => ({
+    key,
+    label: state.db.themes[key]?.label || key,
+    lines: (state.db.themes[key]?.lines || []).slice(0, 4),
+    conciseLines: conciseThemeLines[key] || []
+  }));
+}
+
 function scriptureLibrary() {
   return state.db.scriptureReferences.map((reference) => ({
     reference,
@@ -408,15 +417,55 @@ function currentToneLabel() {
   return state.db.tones[elements.tone.value]?.label || elements.tone.value || "Simple";
 }
 
-function aiPayload() {
+function aiStyleContext() {
+  const db = state.db;
+  const type = db.prayerTypes[elements.prayerType.value] || db.prayerTypes.general || db.prayerTypes.morning;
+  const tone = db.tones[elements.tone.value] || db.tones.simple || db.tones.tender;
   return {
+    sourceStyleNotes: db.sourceProfile?.styleNotes || [],
+    selectedPrayerTypeTemplate: {
+      label: type.label,
+      greetings: type.greetings.slice(0, 4),
+      focus: type.focus.slice(0, 4)
+    },
+    selectedToneTemplate: {
+      label: tone.label,
+      phrases: tone.phrases.slice(0, 5)
+    },
+    selectedThemeTemplates: selectedThemeSamples(),
+    bridgePatterns: db.bridges.slice(0, 7),
+    gratitudePatterns: db.gratitude.slice(0, 5),
+    closingPatterns: db.closings.slice(0, 6),
+    relationshipBlessings: selectedThemes().includes("relationship") ? db.relationshipBlessings.slice(0, 5) : []
+  };
+}
+
+function aiPayload() {
+  const selectedThemeKeys = selectedThemes();
+  const selectedScriptures = smartScriptureReferences();
+  const peopleRequests = collectPersonRequests();
+  return {
+    settings: {
+      prayerTypeKey: elements.prayerType.value,
+      prayerTypeLabel: currentPrayerTypeLabel(),
+      toneKey: elements.tone.value,
+      toneLabel: currentToneLabel(),
+      length: elements.length.value,
+      prayOverKeys: selectedThemeKeys,
+      prayOverLabels: selectedThemeLabels(),
+      useLocalDatabase: Boolean(elements.useLocalDatabase?.checked)
+    },
     prayerType: currentPrayerTypeLabel(),
     tone: currentToneLabel(),
     length: elements.length.value,
     details: cleanInput(elements.details.value, ""),
     themes: selectedThemeLabels(),
-    peopleRequests: collectPersonRequests(),
-    scriptureOptions: scriptureLibrary()
+    themeKeys: selectedThemeKeys,
+    peopleRequests,
+    scriptureOptions: scriptureLibrary(),
+    selectedScriptureReferences: selectedScriptures,
+    styleContext: aiStyleContext(),
+    previousOutput: cleanInput(state.lastPrayer || elements.output.textContent, "")
   };
 }
 
