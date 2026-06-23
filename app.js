@@ -2,7 +2,9 @@ const state = {
   db: null,
   lastPrayer: "",
   nonce: 0,
-  lastProvider: "static"
+  lastProvider: "static",
+  lastPromptSignature: "",
+  recentPrayersBySignature: {}
 };
 
 const elements = {
@@ -282,28 +284,45 @@ function gratitudeOpening(requests, rng) {
     return pick([
       `Father, thank You for loving ${people} and for caring about every part of this need.`,
       `Jesus, thank You for staying close to ${people} and for hearing this prayer before we have perfect words.`,
-      `Holy Spirit, thank You for being present with ${people} and for helping us pray with honesty.`
+      `Holy Spirit, thank You for being present with ${people} and for helping us pray with honesty.`,
+      `Father, thank You that ${people} is not carrying this alone.`,
+      `Jesus, thank You for seeing ${people} clearly and loving faithfully.`
     ], rng);
   }
   return pick([
     "Father, thank You for meeting us with mercy in this moment.",
     "Jesus, thank You for hearing us and staying near.",
-    "Holy Spirit, thank You for helping us pray with honesty and faith."
+    "Holy Spirit, thank You for helping us pray with honesty and faith.",
+    "Father, thank You for caring about this need before we know how to explain it.",
+    "Jesus, thank You for being present in the middle of this situation."
   ], rng);
 }
 
-function personRequestPrayerLines(requests, length) {
+function personRequestPrayerLines(requests, length, rng) {
   if (!requests.length) return [];
   const limit = length === "tiny" ? 1 : length === "short" ? 2 : requests.length;
   return requests.slice(0, limit).map((item) => {
     const need = smoothNeed(item.request);
     if (item.person && need) {
-      return `Please stay close to ${item.person} and bring ${need}.`;
+      return pick([
+        `Please stay close to ${item.person} and bring ${need}.`,
+        `Please give ${item.person} grace, wisdom, and peace around ${need}.`,
+        `Please cover ${item.person} with Your care and lead every part of ${need}.`,
+        `Please help ${item.person} trust You while You work through ${need}.`
+      ], rng);
     }
     if (item.person) {
-      return `Please stay close to ${item.person} and give what is needed today.`;
+      return pick([
+        `Please stay close to ${item.person} and give what is needed today.`,
+        `Please guide ${item.person} with peace, wisdom, and strength.`,
+        `Please cover ${item.person} with Your care.`
+      ], rng);
     }
-    return `Please bring ${need}.`;
+    return pick([
+      `Please bring ${need}.`,
+      `Please lead this need with wisdom and peace.`,
+      `Please work through ${need} in the way that honors You.`
+    ], rng);
   });
 }
 
@@ -312,9 +331,22 @@ function detailPrayerLine(details) {
   return `Guide the details we can see and the ones only You know.`;
 }
 
-function willSurrender(length) {
-  if (length === "tiny") return "Let Your will be done. In Jesus name, Amen.";
-  if (length === "short") return "Give us wisdom to follow Your will. In Jesus name, Amen.";
+function willSurrender(length, rng) {
+  if (length === "tiny") {
+    return pick([
+      "Let Your will be done. In Jesus name, Amen.",
+      "Lead this with Your peace. In Jesus name, Amen.",
+      "Help us trust You here. In Jesus name, Amen."
+    ], rng);
+  }
+  if (length === "short") {
+    return pick([
+      "Give us wisdom to follow Your will. In Jesus name, Amen.",
+      "Help us trust Your timing and take the next faithful step. In Jesus name, Amen.",
+      "Let Your peace lead what happens next. In Jesus name, Amen.",
+      "Keep our hearts steady and surrendered to You. In Jesus name, Amen."
+    ], rng);
+  }
   return "";
 }
 
@@ -354,6 +386,15 @@ function scriptureLibrary() {
   return state.db.scriptureReferences.map((reference) => ({
     reference,
     topics: scriptureProfiles[reference] || []
+  }));
+}
+
+function aiScriptureLibrary() {
+  const seasonalTopics = new Set(["morning", "new day"]);
+  const isMorningPrayer = elements.prayerType.value === "morning";
+  return scriptureLibrary().map((item) => ({
+    ...item,
+    topics: isMorningPrayer ? item.topics : item.topics.filter((topic) => !seasonalTopics.has(topic))
   }));
 }
 
@@ -424,6 +465,10 @@ function lengthSettings(length) {
 }
 
 function currentFormSeed() {
+  return `${currentPromptSignature()}|${state.nonce}`;
+}
+
+function currentPromptSignature() {
   const requests = formatPersonRequests(collectPersonRequests());
   return [
     elements.prayerType.value,
@@ -432,8 +477,7 @@ function currentFormSeed() {
     requests,
     elements.details.value,
     selectedThemes().join(","),
-    elements.useLocalDatabase?.checked ? "local" : "ai",
-    state.nonce
+    elements.useLocalDatabase?.checked ? "local" : "ai"
   ].join("|");
 }
 
@@ -445,12 +489,25 @@ function currentToneLabel() {
   return state.db.tones[elements.tone.value]?.label || elements.tone.value || "Simple";
 }
 
+function recentPrayers(promptSignature) {
+  return state.recentPrayersBySignature[promptSignature] || [];
+}
+
+function rememberPrayer(promptSignature, prayer) {
+  const normalized = cleanInput(prayer, "");
+  if (!normalized) return;
+  const current = recentPrayers(promptSignature).filter((item) => item !== normalized);
+  state.recentPrayersBySignature[promptSignature] = [normalized, ...current].slice(0, 5);
+}
+
 function aiStyleContext() {
   const db = state.db;
   const type = db.prayerTypes[elements.prayerType.value] || db.prayerTypes.general || db.prayerTypes.morning;
   const tone = db.tones[elements.tone.value] || db.tones.simple || db.tones.tender;
+  const sourceStyleNotes = (db.sourceProfile?.styleNotes || [])
+    .filter((note) => elements.prayerType.value === "morning" || !/\bmorning\b|\bnew day\b/i.test(note));
   return {
-    sourceStyleNotes: db.sourceProfile?.styleNotes || [],
+    sourceStyleNotes,
     selectedPrayerTypeTemplate: {
       label: type.label,
       greetings: type.greetings.slice(0, 4),
@@ -472,6 +529,9 @@ function aiPayload() {
   const selectedThemeKeys = selectedThemes();
   const selectedScriptures = smartScriptureReferences();
   const peopleRequests = collectPersonRequests();
+  const promptSignature = currentPromptSignature();
+  const previousOutputs = recentPrayers(promptSignature);
+  const previousOutput = previousOutputs[0] || "";
   return {
     settings: {
       prayerTypeKey: elements.prayerType.value,
@@ -490,10 +550,12 @@ function aiPayload() {
     themes: selectedThemeLabels(),
     themeKeys: selectedThemeKeys,
     peopleRequests,
-    scriptureOptions: scriptureLibrary(),
+    scriptureOptions: aiScriptureLibrary(),
     selectedScriptureReferences: selectedScriptures,
     styleContext: aiStyleContext(),
-    previousOutput: cleanInput(state.lastPrayer || elements.output.textContent, "")
+    previousOutput,
+    previousOutputs,
+    variationSeed: String(state.nonce)
   };
 }
 
@@ -524,7 +586,7 @@ function buildPrayer() {
 
   sections.push(gratitudeOpening(personRequests, rng));
 
-  sections.push(...personRequestPrayerLines(personRequests, elements.length.value));
+  sections.push(...personRequestPrayerLines(personRequests, elements.length.value, rng));
   const detailLine = detailPrayerLine(details);
   if (detailLine) sections.push(detailLine);
 
@@ -540,7 +602,7 @@ function buildPrayer() {
     sections.push(...pickMany(db.relationshipBlessings, settings.relationship, rng));
   }
 
-  sections.push(willSurrender(elements.length.value) || pick(db.closings, rng));
+  sections.push(willSurrender(elements.length.value, rng) || pick(db.closings, rng));
 
   const prayer = sections
     .filter(Boolean)
@@ -549,6 +611,8 @@ function buildPrayer() {
 
   state.lastPrayer = prayer;
   state.lastProvider = "static";
+  state.lastPromptSignature = currentPromptSignature();
+  rememberPrayer(state.lastPromptSignature, prayer);
   elements.output.textContent = prayer;
   elements.outputTitle.textContent = type.label;
   elements.sourceNote.textContent = elements.useLocalDatabase?.checked
@@ -577,6 +641,8 @@ async function generateAiPrayer() {
   if (!data.prayer) throw new Error("AI response did not include a prayer");
   state.lastPrayer = data.prayer;
   state.lastProvider = data.provider || "ai";
+  state.lastPromptSignature = currentPromptSignature();
+  rememberPrayer(state.lastPromptSignature, data.prayer);
   elements.output.textContent = data.prayer;
   elements.outputTitle.textContent = currentPrayerTypeLabel();
   elements.sourceNote.textContent = `${currentToneLabel()} tone - AI generated`;
@@ -776,6 +842,7 @@ function saveCurrentPrayer() {
 function bindEvents() {
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
+    state.nonce += 1;
     generatePrayer();
   });
 

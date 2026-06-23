@@ -154,7 +154,9 @@ function normalizePayload(input) {
     scriptureOptions,
     selectedScriptureReferences: cleanList(input.selectedScriptureReferences, 6, 40),
     styleContext: normalizeStyleContext(input.styleContext),
-    previousOutput: cleanText(input.previousOutput, 1200)
+    previousOutput: cleanText(input.previousOutput, 1200),
+    previousOutputs: cleanList(input.previousOutputs, 5, 800),
+    variationSeed: cleanText(input.variationSeed, 40)
   };
 }
 
@@ -192,8 +194,9 @@ People and prayer needs as private source notes only. Understand these notes, th
 ${requestSourceNotes}
 Details: ${payload.details || "none"}
 
-Current/previous prayer output, if present. Use it only to avoid repeating awkward phrasing and to improve flow. Do not imitate any list-like fallback wording:
-${payload.previousOutput || "none"}
+Recent prayers for the exact same settings, if present. Use these only as wording to avoid. Do not reuse their openings, sentence order, or distinctive phrases:
+${payload.previousOutputs.length ? payload.previousOutputs.map((line, index) => `${index + 1}. ${line}`).join("\n") : payload.previousOutput || "none"}
+Variation seed: ${payload.variationSeed || "none"}
 
 Style profile from the local database:
 Source notes:
@@ -223,6 +226,7 @@ ${payload.selectedScriptureReferences.join(", ") || "none"}
 Flow instructions:
 - Start the first sentence with gratitude to Father, Jesus, or the Holy Spirit.
 - ${requestGuidance}
+- Create a fresh wording variation for this request, even when the settings are similar to a previous request.
 - Keep the prayer in the database style: direct, warm, practical, biblical, and not wordy.
 - Use the template examples for style and rhythm, but do not copy a whole template line unless it fits naturally.
 - If the selected length is tiny or short, prioritize the people/needs and one clear ask over extra decoration.
@@ -280,8 +284,8 @@ async function generatePrayer(payload, env) {
         parts: [{ text: userPrompt(payload) }]
       }],
       generationConfig: {
-        temperature: 0.55,
-        topP: 0.9,
+        temperature: 0.82,
+        topP: 0.95,
         maxOutputTokens,
         responseMimeType: "application/json"
       }
